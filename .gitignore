@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+.venv/
+*.wav
+*.mp3
+*.mp4
+*.pem
+*.key
+.env
+*.ini
+!config.ejemplo.ini

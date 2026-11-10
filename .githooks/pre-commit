@@ -1,0 +1,9 @@
+#!/bin/sh
+# 1. Secretos: gitleaks sobre lo que está en el área de preparación.
+if ! command -v gitleaks >/dev/null 2>&1; then
+  echo "pre-commit: falta gitleaks (https://github.com/gitleaks/gitleaks). Commit bloqueado." >&2
+  exit 1
+fi
+gitleaks git --staged --no-banner --redact -v || { echo "pre-commit: gitleaks encontró un posible secreto." >&2; exit 1; }
+# 2. Términos bloqueados (lista local, fuera del repositorio).
+python herramientas/revisar_nombres.py || exit 1
