@@ -12,6 +12,7 @@ Código y guías de los videos cortos del **Laboratorio Ayemi**. Cada video plan
 | [`af1-wokwi-arduino/`](af1-wokwi-arduino/) | Simula un Arduino gratis en el navegador | F · Microcontroladores |
 | [`f2-wokwi-esp32/`](f2-wokwi-esp32/) | Un ESP32 simulado que consulta el clima en internet | F · Microcontroladores |
 | [`f5-kicad-primera-placa/`](f5-kicad-primera-placa/) | De protoboard a placa con KiCad | F · Microcontroladores |
+| [`g1-vscode/`](g1-vscode/) | VS Code: gratis, de código abierto y tres atajos | G · Herramientas de desarrollador |
 
 **¿Necesitas algo más específico? Lo construimos:** https://ayemi.org/enlaces
 
