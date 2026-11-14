@@ -5,6 +5,7 @@ Código y guías de los videos cortos del **Laboratorio Ayemi**. Cada video plan
 | Carpeta | Video | Saga |
 |---|---|---|
 | [`a2-oracle-12gb/`](a2-oracle-12gb/) | Un servidor gratis para siempre, con 12 GB de RAM | A · Gratis y oficial |
+| [`a9-github-pages/`](a9-github-pages/) | Tu página gratis con GitHub Pages y su letra chiquita | A · Gratis y oficial |
 | [`c1-idea-requisitos/`](c1-idea-requisitos/) | De la idea a los requisitos con IA | C · Web moderna |
 | [`d1-limpiar-audio/`](d1-limpiar-audio/) | Limpia el ruido de tu audio con Python | D · Python que resuelve problemas |
 | [`e1-pieza-por-codigo/`](e1-pieza-por-codigo/) | Una pieza 3D escrita en Python con build123d | E · Modelado 3D con código |
