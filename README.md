@@ -8,6 +8,7 @@ Código y guías de los videos cortos del **Laboratorio Ayemi**. Cada video plan
 | [`a9-github-pages/`](a9-github-pages/) | Tu página gratis con GitHub Pages y su letra chiquita | A · Gratis y oficial |
 | [`c1-idea-requisitos/`](c1-idea-requisitos/) | De la idea a los requisitos con IA | C · Web moderna |
 | [`d1-limpiar-audio/`](d1-limpiar-audio/) | Limpia el ruido de tu audio con Python | D · Python que resuelve problemas |
+| [`d2-ordenar-descargas/`](d2-ordenar-descargas/) | Ordena tu carpeta de Descargas con Python | D · Python que resuelve problemas |
 | [`e1-pieza-por-codigo/`](e1-pieza-por-codigo/) | Una pieza 3D escrita en Python con build123d | E · Modelado 3D con código |
 | [`e2-gabinete-por-codigo/`](e2-gabinete-por-codigo/) | Un gabinete de base y tapa escrito en Python | E · Modelado 3D con código |
 | [`e3-openscad/`](e3-openscad/) | Un soporte para celular paramétrico en OpenSCAD | E · Modelado 3D con código |
@@ -17,7 +18,7 @@ Código y guías de los videos cortos del **Laboratorio Ayemi**. Cada video plan
 | [`f5-kicad-primera-placa/`](f5-kicad-primera-placa/) | De protoboard a placa con KiCad | F · Microcontroladores |
 | [`g1-vscode/`](g1-vscode/) | VS Code: gratis, de código abierto y tres atajos | G · Herramientas de desarrollador |
 | [`g2-git-github/`](g2-git-github/) | Git y GitHub: qué hace cada comando | G · Herramientas de desarrollador |
-
+| [`p1-pedidos-en-whatsapp/`](p1-pedidos-en-whatsapp/) | Pedidos por WhatsApp sin libreta: catálogo, tablero y resumen del día (maqueta) | P · Casos |
 **¿Necesitas algo más específico? Lo construimos:** https://ayemi.org/enlaces
 
 ## Licencias

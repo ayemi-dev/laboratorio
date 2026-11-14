@@ -1,0 +1,308 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pedidos · maqueta</title>
+<!--
+  Maqueta del video P1 del Laboratorio Ayemi: pedidos que llegan ordenados,
+  un tablero por estado, aviso por WhatsApp con enlace wa.me y resumen del día.
+  Un solo archivo, sin servidor ni dependencias: ábrelo en el navegador.
+  Los pedidos viven en la memoria de la página (se borran al recargar).
+  Datos de ejemplo: ni los nombres ni los números son reales.
+-->
+<style>
+  :root {
+    --fondo: #0E1217; --sup: #1A1D21; --borde: #24282E;
+    --texto2: #949CA8; --texto: #E2E8F0; --cian: #0BC5EA; --verde: #22C79B;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--fondo); color: var(--texto);
+    font: 500 31px/1.35 "Plus Jakarta Sans", system-ui, sans-serif;
+  }
+  .mono { font-family: "JetBrains Mono", ui-monospace, monospace; }
+  header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 28px 32px 12px;
+  }
+  header h1 { margin: 0; font-size: 39px; font-weight: 700; }
+  .ejemplo {
+    font-size: 25px; color: var(--texto2); border: 2px solid var(--borde);
+    border-radius: 999px; padding: 4px 16px;
+  }
+  nav { display: flex; gap: 12px; padding: 8px 32px 20px; }
+  nav button {
+    flex: 1; font: inherit; font-size: 25px; font-weight: 600; color: var(--texto2);
+    background: var(--sup); border: 2px solid var(--borde); border-radius: 18px; padding: 14px 0;
+    cursor: pointer;
+  }
+  nav button.activa { color: var(--fondo); background: var(--cian); border-color: var(--cian); }
+  main { padding: 0 32px 32px; }
+  .vista { display: none; }
+  .vista.activa { display: block; }
+
+  /* Catálogo */
+  .producto {
+    display: flex; align-items: center; justify-content: space-between;
+    background: var(--sup); border: 2px solid var(--borde); border-radius: 22px;
+    padding: 22px 26px; margin-bottom: 16px;
+  }
+  .producto .nombre { font-weight: 600; }
+  .producto .nota { font-size: 25px; color: var(--texto2); }
+  .contador { display: flex; align-items: center; gap: 18px; }
+  .contador button {
+    width: 58px; height: 58px; border-radius: 16px; border: 2px solid var(--borde);
+    background: var(--fondo); color: var(--cian); font-family: inherit; font-size: 39px; font-weight: 700; line-height: 1; cursor: pointer;
+  }
+  .contador .n { min-width: 34px; text-align: center; font-weight: 700; }
+  label { display: block; font-size: 25px; color: var(--texto2); margin: 18px 0 8px; }
+  input {
+    width: 100%; font: inherit; color: var(--texto); background: var(--sup);
+    border: 2px solid var(--borde); border-radius: 18px; padding: 16px 22px;
+  }
+  input:focus { border-color: var(--cian); }
+  input:focus-visible, button:focus-visible, a:focus-visible { outline: 2px solid var(--cian); outline-offset: 2px; }
+  .principal {
+    width: 100%; margin-top: 24px; font: inherit; font-weight: 700; color: var(--fondo);
+    background: var(--cian); border: 0; border-radius: 20px; padding: 22px; cursor: pointer;
+  }
+  .aviso-ok {
+    margin-top: 20px; padding: 18px 24px; border-radius: 18px; background: var(--sup);
+    border: 2px solid var(--verde); color: var(--verde); font-weight: 600; display: none;
+  }
+
+  /* Tablero */
+  .columnas { display: grid; gap: 18px; }
+  .columna { background: var(--sup); border: 2px solid var(--borde); border-radius: 22px; padding: 18px 20px; }
+  .columna h2 {
+    margin: 0 0 12px; font-size: 25px; color: var(--texto2); display: flex; justify-content: space-between;
+  }
+  .columna h2 .cuenta { color: var(--cian); }
+  .tarjeta {
+    background: var(--fondo); border: 2px solid var(--borde); border-radius: 18px;
+    padding: 16px 20px; margin-top: 12px; transition: border-color .3s;
+  }
+  .tarjeta.nueva { border-color: var(--cian); }
+  .tarjeta .fila { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+  .tarjeta .detalle { font-size: 25px; color: var(--texto2); }
+  .tarjeta .acciones { display: flex; gap: 10px; margin-top: 12px; }
+  .tarjeta .acciones button {
+    flex: 1; font: inherit; font-size: 25px; font-weight: 600; border-radius: 14px; padding: 10px;
+    cursor: pointer; background: var(--sup); color: var(--texto); border: 2px solid var(--borde);
+  }
+  .tarjeta .acciones .wa { color: var(--verde); border-color: var(--verde); }
+
+  /* Aviso por WhatsApp */
+  .modal {
+    position: fixed; inset: 0; background: rgba(14, 18, 23, .85);
+    display: none; align-items: center; justify-content: center; padding: 32px;
+  }
+  .modal.abierto { display: flex; }
+  .caja { background: var(--sup); border: 2px solid var(--verde); border-radius: 24px; padding: 28px; width: 100%; }
+  .caja h3 { margin: 0 0 14px; font-size: 31px; }
+  .burbuja { background: var(--fondo); border-radius: 18px; padding: 18px 22px; margin-bottom: 16px; }
+  .enlace { font-size: 25px; color: var(--cian); word-break: break-all; }
+  .caja a { display: block; text-align: center; text-decoration: none; margin-top: 18px; }
+
+  /* Resumen */
+  .cifras { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .cifra { background: var(--sup); border: 2px solid var(--borde); border-radius: 22px; padding: 20px; text-align: center; }
+  .cifra .v { font-size: 61px; font-weight: 700; color: var(--cian); }
+  .cifra.ok .v { color: var(--verde); }
+  .cifra .t { font-size: 25px; color: var(--texto2); }
+  .lista { margin-top: 18px; background: var(--sup); border: 2px solid var(--borde); border-radius: 22px; padding: 10px 24px; }
+  .lista .fila { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 2px solid var(--borde); }
+  .lista .fila:last-child { border-bottom: 0; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Pedidos</h1>
+  <span class="ejemplo">Datos de ejemplo</span>
+</header>
+<nav>
+  <button data-vista="catalogo" class="activa">Catálogo</button>
+  <button data-vista="tablero">Tablero</button>
+  <button data-vista="resumen">Resumen</button>
+</nav>
+<main>
+  <section id="catalogo" class="vista activa">
+    <div id="productos"></div>
+    <label for="nombre">Tu nombre</label>
+    <input id="nombre" autocomplete="off" placeholder="Cómo te llamas">
+    <label for="telefono">Tu WhatsApp</label>
+    <input id="telefono" class="mono" autocomplete="off" inputmode="tel" placeholder="10 dígitos">
+    <button id="enviar" class="principal">Enviar pedido</button>
+    <div id="recibido" class="aviso-ok"></div>
+  </section>
+
+  <section id="tablero" class="vista">
+    <div class="columnas" id="columnas"></div>
+  </section>
+
+  <section id="resumen" class="vista">
+    <div class="cifras">
+      <div class="cifra"><div class="v" id="r-total">0</div><div class="t">pedidos hoy</div></div>
+      <div class="cifra ok"><div class="v" id="r-entregados">0</div><div class="t">entregados</div></div>
+      <div class="cifra"><div class="v" id="r-pendientes">0</div><div class="t">por entregar</div></div>
+    </div>
+    <div class="lista" id="r-productos"></div>
+  </section>
+</main>
+
+<div class="modal" id="modal">
+  <div class="caja">
+    <h3>Avisar por WhatsApp</h3>
+    <div class="burbuja" id="m-texto"></div>
+    <div class="enlace mono" id="m-enlace"></div>
+    <a id="m-abrir" class="principal" target="_blank" rel="noopener">Abrir WhatsApp</a>
+  </div>
+</div>
+
+<script>
+// Catálogo de ejemplo. Sin precios: el video no habla de dinero.
+const PRODUCTOS = [
+  { id: "concha", nombre: "Conchas", nota: "pieza" },
+  { id: "bolillo", nombre: "Bolillos", nota: "pieza" },
+  { id: "pastel", nombre: "Pastel de chocolate", nota: "mediano" },
+  { id: "galletas", nombre: "Galletas surtidas", nota: "bolsa" },
+];
+const ESTADOS = [
+  { id: "nuevo", nombre: "Nuevos" },
+  { id: "preparacion", nombre: "En preparación" },
+  { id: "entregado", nombre: "Entregados" },
+];
+const SIGUIENTE = { nuevo: "preparacion", preparacion: "entregado" };
+
+const carrito = Object.fromEntries(PRODUCTOS.map(p => [p.id, 0]));
+let pedidos = [];
+let folio = 11;
+
+const $ = s => document.querySelector(s);
+
+function mostrar(vista) {
+  document.querySelectorAll(".vista").forEach(v => v.classList.toggle("activa", v.id === vista));
+  document.querySelectorAll("nav button").forEach(b => b.classList.toggle("activa", b.dataset.vista === vista));
+  if (vista === "tablero") pintarTablero();
+  if (vista === "resumen") pintarResumen();
+}
+document.querySelectorAll("nav button").forEach(b => b.onclick = () => mostrar(b.dataset.vista));
+
+function pintarCatalogo() {
+  $("#productos").innerHTML = PRODUCTOS.map(p => `
+    <div class="producto">
+      <div><div class="nombre">${p.nombre}</div><div class="nota">${p.nota}</div></div>
+      <div class="contador">
+        <button data-menos="${p.id}" aria-label="Quitar">−</button>
+        <span class="n mono" id="n-${p.id}">${carrito[p.id]}</span>
+        <button data-mas="${p.id}" aria-label="Agregar">+</button>
+      </div>
+    </div>`).join("");
+  document.querySelectorAll("[data-mas]").forEach(b => b.onclick = () => cambiar(b.dataset.mas, 1));
+  document.querySelectorAll("[data-menos]").forEach(b => b.onclick = () => cambiar(b.dataset.menos, -1));
+}
+function cambiar(id, d) {
+  carrito[id] = Math.max(0, carrito[id] + d);
+  $("#n-" + id).textContent = carrito[id];
+}
+
+function detalle(p) {
+  return PRODUCTOS.filter(x => p.productos[x.id]).map(x => `${p.productos[x.id]} ${x.nombre.toLowerCase()}`).join(", ");
+}
+
+$("#enviar").onclick = () => {
+  const nombre = $("#nombre").value.trim();
+  const telefono = $("#telefono").value.replace(/\D/g, "");
+  const total = Object.values(carrito).reduce((a, b) => a + b, 0);
+  if (!nombre || telefono.length !== 10 || !total) {
+    $("#recibido").style.display = "block";
+    $("#recibido").textContent = "Elige al menos un producto y escribe tu nombre y tu WhatsApp.";
+    return;
+  }
+  agregarPedido(nombre, telefono, { ...carrito });
+  $("#recibido").style.display = "block";
+  $("#recibido").textContent = `Pedido #${String(folio).padStart(4, "0")} recibido. Te avisamos por WhatsApp.`;
+  PRODUCTOS.forEach(p => carrito[p.id] = 0);
+  $("#nombre").value = ""; $("#telefono").value = "";
+  pintarCatalogo();
+};
+
+function agregarPedido(nombre, telefono, productos, estado = "nuevo") {
+  folio += 1;
+  pedidos.unshift({ folio, nombre, telefono, productos, estado, nuevo: estado === "nuevo" });
+}
+
+function pintarTablero() {
+  $("#columnas").innerHTML = ESTADOS.map(e => {
+    const lista = pedidos.filter(p => p.estado === e.id);
+    return `<div class="columna" id="col-${e.id}">
+      <h2><span>${e.nombre}</span><span class="cuenta mono">${lista.length}</span></h2>
+      ${lista.slice(0, 2).map(p => `
+        <div class="tarjeta${p.nuevo ? " nueva" : ""}" id="t-${p.folio}">
+          <div class="fila"><strong>${p.nombre}</strong><span class="mono detalle">#${String(p.folio).padStart(4, "0")}</span></div>
+          <div class="detalle">${detalle(p)}</div>
+          ${SIGUIENTE[p.estado] ? `<div class="acciones">
+            <button data-avanzar="${p.folio}">${p.estado === "nuevo" ? "Preparar" : "Entregado"}</button>
+            <button class="wa" data-avisar="${p.folio}">Avisar</button>
+          </div>` : ""}
+        </div>`).join("")}
+    </div>`;
+  }).join("");
+  document.querySelectorAll("[data-avanzar]").forEach(b => b.onclick = () => avanzar(+b.dataset.avanzar));
+  document.querySelectorAll("[data-avisar]").forEach(b => b.onclick = () => avisar(+b.dataset.avisar));
+}
+function avanzar(f) {
+  const p = pedidos.find(x => x.folio === f);
+  p.estado = SIGUIENTE[p.estado];
+  pedidos.forEach(x => x.nuevo = x === p);   // resalta el último pedido que se movió
+  pintarTablero();
+}
+
+// Enlace oficial de clic para chatear: https://wa.me/<número con lada, sin + ni espacios>?text=<texto codificado>
+function avisar(f) {
+  const p = pedidos.find(x => x.folio === f);
+  const texto = p.estado === "nuevo"
+    ? `Hola, ${p.nombre}. Recibimos tu pedido #${String(p.folio).padStart(4, "0")}: ${detalle(p)}. Te avisamos cuando esté listo.`
+    : `Hola, ${p.nombre}. Tu pedido #${String(p.folio).padStart(4, "0")} ya está listo para recoger.`;
+  const enlace = `https://wa.me/52${p.telefono}?text=${encodeURIComponent(texto)}`;
+  $("#m-texto").textContent = texto;
+  $("#m-enlace").textContent = enlace;
+  $("#m-abrir").href = enlace;
+  $("#modal").classList.add("abierto");
+}
+$("#modal").onclick = e => { if (e.target.id === "modal") $("#modal").classList.remove("abierto"); };
+
+function pintarResumen() {
+  const entregados = pedidos.filter(p => p.estado === "entregado").length;
+  $("#r-total").textContent = pedidos.length;
+  $("#r-entregados").textContent = entregados;
+  $("#r-pendientes").textContent = pedidos.length - entregados;
+  const sumas = PRODUCTOS.map(x => [x.nombre, pedidos.reduce((a, p) => a + (p.productos[x.id] || 0), 0)])
+    .sort((a, b) => b[1] - a[1]);
+  $("#r-productos").innerHTML = sumas.map(([n, v]) =>
+    `<div class="fila"><span>${n}</span><span class="mono">${v}</span></div>`).join("");
+}
+
+// Pedidos de ejemplo para que el tablero y el resumen no empiecen vacíos.
+// Nombres genéricos y números de 10 ceros: no son personas ni teléfonos reales.
+function ejemplos() {
+  const muestra = [
+    ["Cliente A", { concha: 6, bolillo: 10 }, "entregado"],
+    ["Cliente B", { pastel: 1 }, "entregado"],
+    ["Cliente C", { galletas: 2, concha: 4 }, "entregado"],
+    ["Cliente D", { bolillo: 20 }, "preparacion"],
+    ["Cliente E", { concha: 12, galletas: 1 }, "nuevo"],
+  ];
+  folio = 6;
+  muestra.forEach(([n, prod, e]) => agregarPedido(n, "0000000000", prod, e));
+  pedidos.forEach(p => p.nuevo = false);
+}
+
+ejemplos();
+pintarCatalogo();
+const vista = new URLSearchParams(location.search).get("vista");
+if (vista) mostrar(vista);
+</script>
+</body>
+</html>
