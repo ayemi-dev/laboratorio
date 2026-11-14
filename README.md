@@ -19,6 +19,7 @@ Código y guías de los videos cortos del **Laboratorio Ayemi**. Cada video plan
 | [`g1-vscode/`](g1-vscode/) | VS Code: gratis, de código abierto y tres atajos | G · Herramientas de desarrollador |
 | [`g2-git-github/`](g2-git-github/) | Git y GitHub: qué hace cada comando | G · Herramientas de desarrollador |
 | [`p1-pedidos-en-whatsapp/`](p1-pedidos-en-whatsapp/) | Pedidos por WhatsApp sin libreta: catálogo, tablero y resumen del día (maqueta) | P · Casos |
+
 **¿Necesitas algo más específico? Lo construimos:** https://ayemi.org/enlaces
 
 ## Licencias
