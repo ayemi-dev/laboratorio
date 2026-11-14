@@ -9,10 +9,13 @@ Código y guías de los videos cortos del **Laboratorio Ayemi**. Cada video plan
 | [`d1-limpiar-audio/`](d1-limpiar-audio/) | Limpia el ruido de tu audio con Python | D · Python que resuelve problemas |
 | [`e1-pieza-por-codigo/`](e1-pieza-por-codigo/) | Una pieza 3D escrita en Python con build123d | E · Modelado 3D con código |
 | [`e2-gabinete-por-codigo/`](e2-gabinete-por-codigo/) | Un gabinete de base y tapa escrito en Python | E · Modelado 3D con código |
+| [`e3-openscad/`](e3-openscad/) | Un soporte para celular paramétrico en OpenSCAD | E · Modelado 3D con código |
 | [`af1-wokwi-arduino/`](af1-wokwi-arduino/) | Simula un Arduino gratis en el navegador | F · Microcontroladores |
 | [`f2-wokwi-esp32/`](f2-wokwi-esp32/) | Un ESP32 simulado que consulta el clima en internet | F · Microcontroladores |
+| [`f3-stm32-wokwi/`](f3-stm32-wokwi/) | Un STM32 Blue Pill simulado: ADC de 12 bits, PWM y OLED | F · Microcontroladores |
 | [`f5-kicad-primera-placa/`](f5-kicad-primera-placa/) | De protoboard a placa con KiCad | F · Microcontroladores |
 | [`g1-vscode/`](g1-vscode/) | VS Code: gratis, de código abierto y tres atajos | G · Herramientas de desarrollador |
+| [`g2-git-github/`](g2-git-github/) | Git y GitHub: qué hace cada comando | G · Herramientas de desarrollador |
 
 **¿Necesitas algo más específico? Lo construimos:** https://ayemi.org/enlaces
 
