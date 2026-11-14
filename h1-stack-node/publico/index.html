@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mis tareas</title>
+  <style>
+    body { font-family: system-ui, sans-serif; background: #0E1217;
+           color: #E2E8F0; margin: 0; padding: 40px; font-size: 31px; }
+    h1 { color: #0BC5EA; font-size: 61px; }
+    ul { padding: 0; }
+    li { background: #1A1D21; margin: 16px 0; padding: 24px 28px;
+         border-radius: 12px; list-style: none; }
+  </style>
+</head>
+<body>
+  <h1>Mis tareas</h1>
+  <ul id="lista"></ul>
+  <script>
+    // Interfaz: le pide los datos al servidor
+    fetch('/api/tareas')
+      .then((r) => r.json())
+      .then((tareas) => {
+        for (const t of tareas) {
+          const li = document.createElement('li');
+          li.textContent = t.texto;
+          document.querySelector('#lista').append(li);
+        }
+      });
+  </script>
+</body>
+</html>

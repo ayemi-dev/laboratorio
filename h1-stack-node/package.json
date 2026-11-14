@@ -1,0 +1,11 @@
+{
+  "name": "h1-stack-node",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "node --disable-warning=ExperimentalWarning servidor.js"
+  },
+  "dependencies": {
+    "express": "^5.3.0"
+  }
+}
