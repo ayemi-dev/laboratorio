@@ -1,0 +1,750 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Citas · maqueta</title>
+<!--
+  Maqueta del video P2 del Laboratorio Ayemi: agenda en línea para barbería,
+  panel del negocio con confirmación y recordatorios por WhatsApp (enlace wa.me).
+  Un solo archivo, sin servidor ni dependencias: ábrelo en el navegador.
+  Las citas viven en la memoria de la página (se restauran al recargar).
+  Datos de ejemplo: ni los nombres ni los teléfonos son reales.
+-->
+<style>
+  :root {
+    --fondo: #0E1217;
+    --sup: #1A1D21;
+    --borde: #24282E;
+    --texto2: #949CA8;
+    --texto: #E2E8F0;
+    --cian: #0BC5EA;
+    --verde: #22C79B;
+    --error: #F0475E;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    background: var(--fondo);
+    color: var(--texto);
+    font: 500 28px/1.35 "Plus Jakarta Sans", system-ui, sans-serif;
+    overflow-x: hidden;
+  }
+  .mono { font-family: "JetBrains Mono", ui-monospace, monospace; }
+
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: var(--fondo);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 20px 28px 12px;
+    border-bottom: 2px solid var(--borde);
+  }
+  header h1 { margin: 0; font-size: 31px; font-weight: 700; }
+  .ejemplo {
+    font-size: 20px;
+    color: var(--texto2);
+    border: 2px solid var(--borde);
+    border-radius: 999px;
+    padding: 4px 14px;
+    white-space: nowrap;
+  }
+
+  nav {
+    display: flex;
+    gap: 12px;
+    padding: 14px 28px 16px;
+  }
+  nav button, .subnav button {
+    flex: 1;
+    min-height: 48px;
+    font: inherit;
+    font-size: 25px;
+    font-weight: 600;
+    color: var(--texto2);
+    background: var(--sup);
+    border: 2px solid var(--borde);
+    border-radius: 16px;
+    padding: 12px 10px;
+    cursor: pointer;
+  }
+  nav button.activa, .subnav button.activa {
+    color: var(--fondo);
+    background: var(--cian);
+    border-color: var(--cian);
+  }
+  .subnav {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .subnav button {
+    font-size: 20px;
+    padding: 10px 8px;
+  }
+
+  main { padding: 0 28px 32px; }
+  .vista { display: none; }
+  .vista.activa { display: block; }
+  .subvista { display: none; }
+  .subvista.activa { display: block; }
+
+  .grupo-titulo {
+    font-size: 20px;
+    color: var(--texto2);
+    margin: 14px 0 8px;
+  }
+  .servicios {
+    display: grid;
+    gap: 10px;
+  }
+  .servicio-btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    min-height: 52px;
+    text-align: left;
+    font: inherit;
+    font-size: 25px;
+    font-weight: 600;
+    color: var(--texto);
+    background: var(--sup);
+    border: 2px solid var(--borde);
+    border-radius: 16px;
+    padding: 14px 18px;
+    cursor: pointer;
+  }
+  .servicio-btn .dur {
+    font-size: 20px;
+    color: var(--texto2);
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+  }
+  .servicio-btn.activo {
+    border-color: var(--cian);
+    background: rgba(11, 197, 234, 0.12);
+  }
+  .servicio-btn.activo .dur { color: var(--cian); }
+
+  .dias {
+    display: flex;
+    gap: 10px;
+  }
+  .dia-btn {
+    flex: 1;
+    min-height: 48px;
+    font: inherit;
+    font-size: 25px;
+    font-weight: 600;
+    color: var(--texto);
+    background: var(--sup);
+    border: 2px solid var(--borde);
+    border-radius: 14px;
+    padding: 10px;
+    cursor: pointer;
+  }
+  .dia-btn.activo {
+    border-color: var(--cian);
+    color: var(--cian);
+  }
+
+  .horarios {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+  .hora-btn {
+    min-height: 52px;
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--texto);
+    background: var(--sup);
+    border: 2px solid var(--borde);
+    border-radius: 14px;
+    padding: 10px 6px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    line-height: 1.15;
+  }
+  .hora-btn.activo {
+    background: var(--cian);
+    border-color: var(--cian);
+    color: var(--fondo);
+  }
+  .hora-btn:disabled, .hora-btn.ocupado {
+    background: var(--fondo);
+    border-color: var(--borde);
+    color: var(--texto2);
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+  .hora-btn .etiq {
+    font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+  }
+
+  label {
+    display: block;
+    font-size: 20px;
+    color: var(--texto2);
+    margin: 14px 0 6px;
+  }
+  input {
+    width: 100%;
+    min-height: 48px;
+    font: inherit;
+    font-size: 25px;
+    color: var(--texto);
+    background: var(--sup);
+    border: 2px solid var(--borde);
+    border-radius: 16px;
+    padding: 12px 18px;
+  }
+  input:focus { border-color: var(--cian); }
+  input:focus-visible, button:focus-visible, a:focus-visible {
+    outline: 2px solid var(--cian);
+    outline-offset: 2px;
+  }
+
+  .principal {
+    width: 100%;
+    min-height: 54px;
+    margin-top: 18px;
+    font: inherit;
+    font-size: 25px;
+    font-weight: 700;
+    color: var(--fondo);
+    background: var(--cian);
+    border: 0;
+    border-radius: 18px;
+    padding: 16px;
+    cursor: pointer;
+  }
+  .aviso-ok {
+    margin-top: 16px;
+    padding: 16px 20px;
+    border-radius: 16px;
+    background: var(--sup);
+    border: 2px solid var(--verde);
+    color: var(--verde);
+    font-size: 25px;
+    font-weight: 600;
+    display: none;
+  }
+  .aviso-err {
+    border-color: var(--error);
+    color: var(--error);
+  }
+
+  /* Panel del negocio */
+  .columnas { display: grid; gap: 14px; }
+  .columna {
+    background: var(--sup);
+    border: 2px solid var(--borde);
+    border-radius: 20px;
+    padding: 14px 16px;
+  }
+  .columna h2 {
+    margin: 0 0 8px;
+    font-size: 20px;
+    color: var(--texto2);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .columna h2 .cuenta { color: var(--cian); }
+  .vacio { font-size: 20px; color: var(--texto2); padding: 6px 0; }
+
+  .tarjeta {
+    background: var(--fondo);
+    border: 2px solid var(--borde);
+    border-radius: 16px;
+    padding: 14px 16px;
+    margin-top: 10px;
+  }
+  .tarjeta.resaltada { border-color: var(--cian); }
+  .tarjeta .fila {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+  }
+  .tarjeta .detalle { font-size: 20px; color: var(--texto2); margin-top: 4px; }
+  .tarjeta .acciones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+  }
+  .tarjeta .acciones button {
+    flex: 1;
+    min-width: 120px;
+    min-height: 46px;
+    font: inherit;
+    font-size: 20px;
+    font-weight: 600;
+    border-radius: 12px;
+    padding: 10px 12px;
+    cursor: pointer;
+    background: var(--sup);
+    color: var(--texto);
+    border: 2px solid var(--borde);
+  }
+  .tarjeta .acciones .wa {
+    color: var(--verde);
+    border-color: var(--verde);
+  }
+  .tarjeta .acciones .cancelar {
+    color: var(--error);
+    border-color: var(--error);
+  }
+
+  /* Vista previa de mensaje WhatsApp */
+  .modal {
+    position: fixed;
+    inset: 0;
+    z-index: 20;
+    background: rgba(14, 18, 23, 0.88);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  .modal.abierto { display: flex; }
+  .caja {
+    background: var(--sup);
+    border: 2px solid var(--verde);
+    border-radius: 22px;
+    padding: 22px;
+    width: 100%;
+    max-width: 680px;
+  }
+  .caja h3 { margin: 0 0 12px; font-size: 25px; }
+  .burbuja {
+    background: var(--fondo);
+    border-radius: 16px;
+    padding: 16px 18px;
+    margin-bottom: 12px;
+    font-size: 20px;
+  }
+  .enlace {
+    font-size: 18px;
+    color: var(--cian);
+    word-break: break-all;
+    margin-bottom: 16px;
+  }
+  .caja-acciones {
+    display: flex;
+    gap: 10px;
+  }
+  .caja-acciones a, .caja-acciones button {
+    flex: 1;
+    min-height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    text-decoration: none;
+    font: inherit;
+    font-size: 20px;
+    font-weight: 700;
+    border-radius: 16px;
+    padding: 12px;
+    cursor: pointer;
+  }
+  .caja-acciones a {
+    background: var(--verde);
+    color: var(--fondo);
+    border: 0;
+  }
+  .caja-acciones button {
+    background: var(--fondo);
+    color: var(--texto);
+    border: 2px solid var(--borde);
+  }
+
+  @media (max-width: 500px) {
+    html, body { font-size: 16px; }
+    header { padding: 14px 16px 10px; }
+    header h1 { font-size: 20px; }
+    .ejemplo { font-size: 12px; padding: 3px 10px; }
+    nav { padding: 10px 16px 12px; gap: 8px; }
+    nav button, .subnav button { font-size: 14px; min-height: 44px; padding: 10px 6px; }
+    main { padding: 0 16px 24px; }
+    .grupo-titulo, label { font-size: 14px; }
+    .servicio-btn { font-size: 14px; min-height: 46px; padding: 10px 14px; }
+    .servicio-btn .dur, .dia-btn { font-size: 14px; }
+    .hora-btn { font-size: 14px; min-height: 46px; }
+    .hora-btn .etiq { font-size: 11px; }
+    input { font-size: 14px; min-height: 44px; padding: 10px 14px; }
+    .principal { font-size: 14px; min-height: 46px; padding: 12px; }
+    .aviso-ok { font-size: 14px; padding: 12px 14px; }
+    .columna h2 { font-size: 14px; }
+    .vacio { font-size: 12px; }
+    .tarjeta .detalle { font-size: 12px; }
+    .tarjeta .acciones button { font-size: 12px; min-height: 44px; min-width: 90px; padding: 8px 10px; }
+    .caja h3 { font-size: 16px; }
+    .burbuja { font-size: 14px; padding: 12px 14px; }
+    .enlace { font-size: 12px; }
+    .caja-acciones a, .caja-acciones button { font-size: 14px; min-height: 44px; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>Barbería · Citas</h1>
+  <span class="ejemplo">Datos de ejemplo</span>
+</header>
+
+<nav>
+  <button data-vista="cliente" class="activa">Vista del cliente</button>
+  <button data-vista="panel">Panel del negocio</button>
+</nav>
+
+<main>
+  <section id="cliente" class="vista activa">
+    <div class="grupo-titulo">Elige el servicio</div>
+    <div class="servicios" id="servicios"></div>
+
+    <div class="grupo-titulo">Día</div>
+    <div class="dias" id="dias"></div>
+
+    <div class="grupo-titulo">Horarios disponibles</div>
+    <div class="horarios" id="horarios"></div>
+
+    <label for="nombre">Nombre</label>
+    <input id="nombre" autocomplete="off" placeholder="Tu nombre">
+
+    <label for="telefono">Teléfono (10 dígitos)</label>
+    <input id="telefono" class="mono" autocomplete="off" inputmode="tel" placeholder="0000000000">
+
+    <button id="pedir" class="principal">Pedir cita</button>
+    <div id="aviso" class="aviso-ok"></div>
+  </section>
+
+  <section id="panel" class="vista">
+    <div class="subnav">
+      <button data-subvista="agenda" class="activa">Agenda de mañana</button>
+      <button data-subvista="recordatorios">Recordatorios de mañana</button>
+    </div>
+
+    <div id="sub-agenda" class="subvista activa">
+      <div class="columnas" id="columnas"></div>
+    </div>
+
+    <div id="sub-recordatorios" class="subvista">
+      <div id="lista-recordatorios"></div>
+    </div>
+  </section>
+</main>
+
+<div class="modal" id="modal">
+  <div class="caja">
+    <h3 id="m-titulo">Confirmar por WhatsApp</h3>
+    <div class="burbuja" id="m-texto"></div>
+    <div class="enlace mono" id="m-enlace"></div>
+    <div class="caja-acciones">
+      <a id="m-abrir" target="_blank" rel="noopener">Abrir WhatsApp</a>
+      <button id="m-cerrar" type="button">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<!--
+  Formato oficial de clic para chatear (Centro de ayuda de WhatsApp):
+  «Usa https://wa.me/<number> (<number> es un número de teléfono completo en formato internacional).»
+  «Usa https://wa.me/whatsappphonenumber/?text=urlencodedtext»
+-->
+<script>
+const SERVICIOS = [
+  { id: "corte", nombre: "Corte", duracion: 30 },
+  { id: "barba", nombre: "Barba", duracion: 30 },
+  { id: "corte-barba", nombre: "Corte y barba", duracion: 60 },
+];
+
+const DIAS = ["Hoy", "Mañana"];
+
+const ESTADOS = [
+  { id: "por_confirmar", nombre: "Por confirmar" },
+  { id: "confirmada", nombre: "Confirmada" },
+  { id: "atendida", nombre: "Atendida" },
+  { id: "no_llego", nombre: "No llegó" },
+];
+
+const HORA_INICIO = 10 * 60;
+const HORA_FIN = 19 * 60;
+const BLOQUE = 30;
+
+let servicioSel = "corte";
+let diaSel = "Mañana";
+let horaSel = null;
+let citas = [];
+let siguienteId = 1;
+let citaEnModal = null;
+
+const $ = s => document.querySelector(s);
+
+function aMinutos(hhmm) {
+  const [h, m] = hhmm.split(":").map(Number);
+  return h * 60 + m;
+}
+
+function aHHMM(min) {
+  const h = String(Math.floor(min / 60)).padStart(2, "0");
+  const m = String(min % 60).padStart(2, "0");
+  return `${h}:${m}`;
+}
+
+function servicioDe(id) {
+  return SERVICIOS.find(s => s.id === id);
+}
+
+function hayCruce(dia, inicioMin, duracionMin) {
+  const finMin = inicioMin + duracionMin;
+  return citas.some(c => {
+    if (c.dia !== dia) return false;
+    const cIni = aMinutos(c.hora);
+    const cFin = cIni + servicioDe(c.servicio).duracion;
+    return inicioMin < cFin && finMin > cIni;
+  });
+}
+
+function mostrarVista(vista) {
+  document.querySelectorAll(".vista").forEach(v => v.classList.toggle("activa", v.id === vista));
+  document.querySelectorAll("nav button").forEach(b => b.classList.toggle("activa", b.dataset.vista === vista));
+  if (vista === "cliente") pintarCliente();
+  if (vista === "panel") pintarPanel();
+}
+
+function mostrarSubvista(sub) {
+  document.querySelectorAll(".subvista").forEach(v => v.classList.toggle("activa", v.id === "sub-" + sub));
+  document.querySelectorAll(".subnav button").forEach(b => b.classList.toggle("activa", b.dataset.subvista === sub));
+  pintarPanel();
+}
+
+document.querySelectorAll("nav button").forEach(b => b.onclick = () => mostrarVista(b.dataset.vista));
+document.querySelectorAll(".subnav button").forEach(b => b.onclick = () => mostrarSubvista(b.dataset.subvista));
+
+function pintarCliente() {
+  $("#servicios").innerHTML = SERVICIOS.map(s => `
+    <button type="button" class="servicio-btn${s.id === servicioSel ? " activo" : ""}" data-serv="${s.id}">
+      <span>${s.nombre}</span>
+      <span class="dur">${s.duracion} min</span>
+    </button>
+  `).join("");
+  document.querySelectorAll("[data-serv]").forEach(b => b.onclick = () => {
+    servicioSel = b.dataset.serv;
+    horaSel = null;
+    pintarCliente();
+  });
+
+  $("#dias").innerHTML = DIAS.map(d => `
+    <button type="button" class="dia-btn${d === diaSel ? " activo" : ""}" data-dia="${d}">${d}</button>
+  `).join("");
+  document.querySelectorAll("[data-dia]").forEach(b => b.onclick = () => {
+    diaSel = b.dataset.dia;
+    horaSel = null;
+    pintarCliente();
+  });
+
+  const dur = servicioDe(servicioSel).duracion;
+  const bloquesHTML = [];
+  for (let t = HORA_INICIO; t < HORA_FIN; t += BLOQUE) {
+    const hhmm = aHHMM(t);
+    const bloqueOcupado = hayCruce(diaSel, t, BLOQUE);
+    if (bloqueOcupado) {
+      bloquesHTML.push(`
+        <button type="button" class="hora-btn ocupado" disabled data-hora="${hhmm}">
+          <span>${hhmm}</span>
+          <span class="etiq">Ocupado</span>
+        </button>
+      `);
+    } else if (t + dur <= HORA_FIN && !hayCruce(diaSel, t, dur)) {
+      bloquesHTML.push(`
+        <button type="button" class="hora-btn${horaSel === hhmm ? " activo" : ""}" data-hora="${hhmm}">
+          <span>${hhmm}</span>
+        </button>
+      `);
+    }
+  }
+  $("#horarios").innerHTML = bloquesHTML.join("");
+  document.querySelectorAll(".hora-btn:not(:disabled)").forEach(b => b.onclick = () => {
+    horaSel = b.dataset.hora;
+    pintarCliente();
+  });
+}
+
+$("#pedir").onclick = () => {
+  const nombre = $("#nombre").value.trim();
+  const telefono = $("#telefono").value.replace(/\D/g, "");
+  const aviso = $("#aviso");
+  if (!horaSel || !nombre || telefono.length !== 10) {
+    aviso.style.display = "block";
+    aviso.classList.add("aviso-err");
+    aviso.textContent = "Elige un horario libre y escribe tu nombre y teléfono de 10 dígitos.";
+    return;
+  }
+  const dur = servicioDe(servicioSel).duracion;
+  if (horaSel && hayCruce(diaSel, aMinutos(horaSel), dur)) {
+    aviso.style.display = "block";
+    aviso.classList.add("aviso-err");
+    aviso.textContent = "Ese horario ya fue apartado. Elige otro.";
+    horaSel = null;
+    pintarCliente();
+    return;
+  }
+  citas.push({
+    id: siguienteId++,
+    dia: diaSel,
+    hora: horaSel,
+    servicio: servicioSel,
+    nombre,
+    telefono,
+    estado: "por_confirmar",
+  });
+  aviso.style.display = "block";
+  aviso.classList.remove("aviso-err");
+  aviso.textContent = "Cita solicitada. Te confirmamos por WhatsApp.";
+  horaSel = null;
+  $("#nombre").value = "";
+  $("#telefono").value = "";
+  pintarCliente();
+};
+
+function pintarPanel() {
+  const citasManana = citas
+    .filter(c => c.dia === "Mañana")
+    .sort((a, b) => aMinutos(a.hora) - aMinutos(b.hora));
+
+  $("#columnas").innerHTML = ESTADOS.map(e => {
+    const lista = citasManana.filter(c => c.estado === e.id);
+    return `
+      <div class="columna" id="col-${e.id}">
+        <h2><span>${e.nombre}</span><span class="cuenta mono">${lista.length}</span></h2>
+        ${lista.length ? lista.map(c => `
+          <div class="tarjeta${c.estado === "por_confirmar" ? " resaltada" : ""}" id="cita-${c.id}">
+            <div class="fila">
+              <strong>${c.nombre}</strong>
+              <span class="mono detalle">${c.hora}</span>
+            </div>
+            <div class="detalle">${servicioDe(c.servicio).nombre} · ${servicioDe(c.servicio).duracion} min</div>
+            ${c.estado === "por_confirmar" ? `
+              <div class="acciones">
+                <button type="button" class="wa" data-confirmar="${c.id}">Confirmar por WhatsApp</button>
+              </div>
+            ` : ""}
+            ${c.estado === "confirmada" ? `
+              <div class="acciones">
+                <button type="button" data-estado="atendida" data-id="${c.id}">Atendida</button>
+                <button type="button" data-estado="no_llego" data-id="${c.id}">No llegó</button>
+              </div>
+            ` : ""}
+          </div>
+        `).join("") : `<div class="vacio">Sin citas</div>`}
+      </div>
+    `;
+  }).join("");
+
+  document.querySelectorAll("[data-confirmar]").forEach(b => b.onclick = () => abrirConfirmacion(+b.dataset.confirmar));
+  document.querySelectorAll("[data-estado]").forEach(b => b.onclick = () => {
+    const c = citas.find(x => x.id === +b.dataset.id);
+    if (c) {
+      c.estado = b.dataset.estado;
+      pintarPanel();
+    }
+  });
+
+  const confirmadas = citasManana.filter(c => c.estado === "confirmada");
+  $("#lista-recordatorios").innerHTML = confirmadas.length ? confirmadas.map(c => `
+    <div class="tarjeta" id="rec-${c.id}">
+      <div class="fila">
+        <strong>${c.nombre}</strong>
+        <span class="mono detalle">${c.hora}</span>
+      </div>
+      <div class="detalle">${servicioDe(c.servicio).nombre} · ${servicioDe(c.servicio).duracion} min</div>
+      <div class="acciones">
+        <button type="button" class="wa" data-recordar="${c.id}">Enviar recordatorio</button>
+        <button type="button" class="cancelar" data-cancelar="${c.id}">Canceló</button>
+      </div>
+    </div>
+  `).join("") : `<div class="vacio">No hay citas confirmadas para mañana.</div>`;
+
+  document.querySelectorAll("[data-recordar]").forEach(b => b.onclick = () => abrirRecordatorio(+b.dataset.recordar));
+  document.querySelectorAll("[data-cancelar]").forEach(b => b.onclick = () => {
+    const id = +b.dataset.cancelar;
+    citas = citas.filter(c => c.id !== id);
+    pintarPanel();
+  });
+}
+
+function abrirModal(titulo, texto, telefono) {
+  const enlace = `https://wa.me/52${telefono}?text=${encodeURIComponent(texto)}`;
+  $("#m-titulo").textContent = titulo;
+  $("#m-texto").textContent = texto;
+  $("#m-enlace").textContent = enlace;
+  $("#m-abrir").href = enlace;
+  $("#modal").classList.add("abierto");
+}
+
+function abrirConfirmacion(id) {
+  const c = citas.find(x => x.id === id);
+  if (!c) return;
+  citaEnModal = { id: c.id, accion: "confirmar" };
+  const texto = `Hola, ${c.nombre}. Tu cita en la barbería quedó confirmada: mañana a las ${c.hora}, ${servicioDe(c.servicio).nombre}. Si no puedes venir, avísanos por aquí.`;
+  abrirModal("Confirmar por WhatsApp", texto, c.telefono);
+}
+
+function abrirRecordatorio(id) {
+  const c = citas.find(x => x.id === id);
+  if (!c) return;
+  citaEnModal = { id: c.id, accion: "recordar" };
+  const texto = `Hola, ${c.nombre}. Te recordamos tu cita de mañana a las ${c.hora}. Si no puedes venir, avísanos y le damos el lugar a alguien más.`;
+  abrirModal("Enviar recordatorio", texto, c.telefono);
+}
+
+function cerrarModal() {
+  $("#modal").classList.remove("abierto");
+  if (citaEnModal && citaEnModal.accion === "confirmar") {
+    const c = citas.find(x => x.id === citaEnModal.id);
+    if (c) c.estado = "confirmada";
+    pintarPanel();
+  }
+  citaEnModal = null;
+}
+
+$("#m-cerrar").onclick = cerrarModal;
+$("#modal").onclick = e => { if (e.target.id === "modal") cerrarModal(); };
+
+// Citas de ejemplo: nombres genéricos (Cliente A..H) y teléfonos 0000000000.
+function cargarEjemplos() {
+  const muestra = [
+    ["Hoy", "11:00", "corte", "Cliente C", "atendida"],
+    ["Hoy", "14:00", "barba", "Cliente H", "confirmada"],
+    ["Hoy", "16:00", "corte-barba", "Cliente C", "por_confirmar"],
+    ["Mañana", "10:00", "corte", "Cliente A", "confirmada"],
+    ["Mañana", "12:00", "barba", "Cliente D", "confirmada"],
+    ["Mañana", "13:00", "corte", "Cliente E", "confirmada"],
+    ["Mañana", "15:00", "corte-barba", "Cliente F", "confirmada"],
+    ["Mañana", "17:00", "corte", "Cliente B", "confirmada"],
+  ];
+  muestra.forEach(([dia, hora, servicio, nombre, estado]) => {
+    citas.push({ id: siguienteId++, dia, hora, servicio, nombre, telefono: "0000000000", estado });
+  });
+}
+
+cargarEjemplos();
+pintarCliente();
+const vistaParam = new URLSearchParams(location.search).get("vista");
+if (vistaParam) mostrarVista(vistaParam);
+</script>
+</body>
+</html>

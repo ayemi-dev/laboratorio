@@ -1,0 +1,8 @@
+src/
+    main.py
+tests/
+    test_main.py
+datos/
+docs/
+README.md
+requirements.txt

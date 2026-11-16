@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>App de Citas</title>
+  <style>
+    :root {
+      --bg: #f4f6f8;
+      --surface: #ffffff;
+      --text: #1a202c;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --primary: #0f766e;
+      --primary-light: #ccfbf1;
+      --danger: #b91c1c;
+      --danger-light: #fee2e2;
+      --warn: #b45309;
+      --warn-light: #fef3c7;
+      --wa: #15803d;
+      --wa-light: #dcfce7;
+      --radius: 12px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.4;
+      padding-bottom: 32px;
+    }
+
+    .app {
+      max-width: 480px;
+      margin: 0 auto;
+      min-height: 100vh;
+      background: var(--bg);
+    }
+
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 16px 10px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    header h1 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .role-tabs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      background: var(--bg);
+      padding: 4px;
+      border-radius: 10px;
+    }
+
+    .role-tab {
+      border: none;
+      background: transparent;
+      padding: 8px 6px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--muted);
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .role-tab.active {
+      background: var(--surface);
+      color: var(--primary);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    }
+
+    main {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px;
+    }
+
+    .card h2 {
+      font-size: 0.98rem;
+      margin-bottom: 10px;
+    }
+
+    .days-row {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+
+    .day-btn {
+      flex: 0 0 auto;
+      min-width: 78px;
+      padding: 8px 10px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--surface);
+      color: var(--text);
+      font-size: 0.82rem;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .day-btn.active {
+      border-color: var(--primary);
+      background: var(--primary-light);
+      color: var(--primary);
+      font-weight: 700;
+    }
+
+    .slots-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .slot-btn {
+      padding: 10px 6px;
+      border: 1px solid var(--primary);
+      background: var(--surface);
+      color: var(--primary);
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .slot-btn.selected {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .slot-btn:disabled {
+      border-color: var(--border);
+      background: var(--bg);
+      color: var(--muted);
+      text-decoration: line-through;
+      cursor: not-allowed;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    label {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-family: inherit;
+      background: #fff;
+    }
+
+    input[readonly] {
+      background: var(--bg);
+      color: var(--muted);
+    }
+
+    .btn {
+      border: none;
+      border-radius: 8px;
+      padding: 11px 14px;
+      font-size: 0.92rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .btn-outline {
+      background: var(--surface);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-danger {
+      background: var(--danger-light);
+      color: var(--danger);
+    }
+
+    .btn-wa {
+      background: var(--wa-light);
+      color: var(--wa);
+    }
+
+    .btn-sm {
+      padding: 7px 10px;
+      font-size: 0.82rem;
+    }
+
+    .list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .item {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .item-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .badge {
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 999px;
+    }
+
+    .badge-pendiente {
+      background: var(--warn-light);
+      color: var(--warn);
+    }
+
+    .badge-confirmada {
+      background: var(--primary-light);
+      color: var(--primary);
+    }
+
+    .badge-cancelada {
+      background: var(--danger-light);
+      color: var(--danger);
+    }
+
+    .meta {
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .toast {
+      background: #1e293b;
+      color: #fff;
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-size: 0.88rem;
+      position: fixed;
+      bottom: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      max-width: 440px;
+      width: calc(100% - 32px);
+      z-index: 50;
+      display: none;
+    }
+
+    .toast.show {
+      display: block;
+    }
+
+    .reprogram-box {
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px dashed var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .empty {
+      color: var(--muted);
+      font-size: 0.88rem;
+      text-align: center;
+      padding: 12px 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <h1>App de Citas</h1>
+      <div class="role-tabs" role="tablist">
+        <button class="role-tab active" data-role="paciente">Paciente</button>
+        <button class="role-tab" data-role="recepcion">Recepción</button>
+        <button class="role-tab" data-role="medico">Médico</button>
+      </div>
+    </header>
+
+    <main id="view"></main>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <script>
+    const HORARIOS_BASE = ["09:00", "10:00", "11:00", "12:00", "16:00", "17:00"];
+
+    function getDays(count = 5) {
+      const days = [];
+      const base = new Date();
+      for (let i = 0; i < count; i++) {
+        const d = new Date(base);
+        d.setDate(base.getDate() + i);
+        const iso = d.toISOString().split("T")[0];
+        const label = i === 0
+          ? "Hoy"
+          : i === 1
+          ? "Mañana"
+          : d.toLocaleDateString("es-MX", { weekday: "short", day: "numeric", month: "short" });
+        days.push({ iso, label });
+      }
+      return days;
+    }
+
+    const DAYS = getDays(5);
+
+    const state = {
+      role: "paciente",
+      selectedDate: DAYS[0].iso,
+      selectedTime: "",
+      reprogrammingId: null,
+      appointments: [
+        {
+          id: 1,
+          nombre: "Paciente 1",
+          telefono: "5550101001",
+          fecha: DAYS[0].iso,
+          hora: "09:00",
+          motivo: "Consulta general",
+          estado: "Confirmada",
+          recordatorio24h: true
+        },
+        {
+          id: 2,
+          nombre: "Paciente 2",
+          telefono: "5550102002",
+          fecha: DAYS[0].iso,
+          hora: "11:00",
+          motivo: "Seguimiento",
+          estado: "Pendiente",
+          recordatorio24h: false
+        },
+        {
+          id: 3,
+          nombre: "Paciente 3",
+          telefono: "5550103003",
+          fecha: DAYS[1].iso,
+          hora: "10:00",
+          motivo: "Revisión",
+          estado: "Confirmada",
+          recordatorio24h: true
+        }
+      ]
+    };
+
+    function showToast(msg) {
+      const el = document.getElementById("toast");
+      el.textContent = msg;
+      el.classList.add("show");
+      clearTimeout(showToast._t);
+      showToast._t = setTimeout(() => el.classList.remove("show"), 3000);
+    }
+
+    function isSlotTaken(fecha, hora, ignoreId = null) {
+      return state.appointments.some(
+        (a) =>
+          a.id !== ignoreId &&
+          a.fecha === fecha &&
+          a.hora === hora &&
+          a.estado !== "Cancelada"
+      );
+    }
+
+    function formatDate(iso) {
+      const found = DAYS.find((d) => d.iso === iso);
+      return found ? `${found.label} (${iso})` : iso;
+    }
+
+    function buildWhatsAppLink(cita) {
+      const texto = `Recordatorio de cita (24 h antes): ${cita.nombre}, te esperamos el ${cita.fecha} a las ${cita.hora}. Motivo: ${cita.motivo}.`;
+      return `https://wa.me/${cita.telefono.replace(/\D/g, "")}?text=${encodeURIComponent(texto)}`;
+    }
+
+    function renderDaySelector(onChange) {
+      const wrap = document.createElement("div");
+      wrap.className = "days-row";
+      DAYS.forEach((d) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = `day-btn ${state.selectedDate === d.iso ? "active" : ""}`;
+        btn.innerHTML = `<div>${d.label}</div><small>${d.iso.slice(5)}</small>`;
+        btn.onclick = () => {
+          state.selectedDate = d.iso;
+          state.selectedTime = "";
+          onChange();
+        };
+        wrap.appendChild(btn);
+      });
+      return wrap;
+    }
+
+    function renderPaciente() {
+      const main = document.getElementById("view");
+      main.innerHTML = "";
+
+      // 1. Ver horarios libres por día
+      const cardSlots = document.createElement("section");
+      cardSlots.className = "card";
+      cardSlots.innerHTML = `<h2>1. Elige día y horario libre</h2>`;
+      cardSlots.appendChild(renderDaySelector(render));
+
+      const grid = document.createElement("div");
+      grid.className = "slots-grid";
+      grid.style.marginTop = "12px";
+
+      HORARIOS_BASE.forEach((hora) => {
+        const taken = isSlotTaken(state.selectedDate, hora);
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = `slot-btn ${state.selectedTime === hora ? "selected" : ""}`;
+        btn.textContent = hora;
+        btn.disabled = taken;
+        btn.onclick = () => {
+          state.selectedTime = hora;
+          render();
+        };
+        grid.appendChild(btn);
+      });
+
+      cardSlots.appendChild(grid);
+      main.appendChild(cardSlots);
+
+      // 2. Agendar cita
+      const cardForm = document.createElement("section");
+      cardForm.className = "card";
+      cardForm.innerHTML = `<h2>2. Agenda tu cita</h2>`;
+
+      const form = document.createElement("form");
+      form.innerHTML = `
+        <label>
+          Fecha
+          <input type="text" name="fecha" value="${state.selectedDate}" readonly />
+        </label>
+        <label>
+          Hora
+          <input type="text" name="hora" value="${state.selectedTime}" placeholder="Selecciona un horario libre arriba" readonly required />
+        </label>
+        <label>
+          Nombre
+          <input type="text" name="nombre" placeholder="Ej. Paciente 4" required />
+        </label>
+        <label>
+          Teléfono (WhatsApp)
+          <input type="tel" name="telefono" placeholder="Ej. 5550104004" required />
+        </label>
+        <label>
+          Motivo de la cita
+          <input type="text" name="motivo" placeholder="Ej. Consulta general" required />
+        </label>
+        <button type="submit" class="btn btn-primary">Agendar cita</button>
+      `;
+
+      form.onsubmit = (e) => {
+        e.preventDefault();
+        if (!state.selectedTime) {
+          showToast("Selecciona primero un horario libre.");
+          return;
+        }
+        const fd = new FormData(form);
+        const nueva = {
+          id: Date.now(),
+          nombre: fd.get("nombre").trim(),
+          telefono: fd.get("telefono").trim(),
+          fecha: state.selectedDate,
+          hora: state.selectedTime,
+          motivo: fd.get("motivo").trim(),
+          estado: "Pendiente",
+          recordatorio24h: true
+        };
+        state.appointments.push(nueva);
+        state.selectedTime = "";
+        showToast("Cita agendada. Se programó recordatorio por WhatsApp 24 h antes.");
+        render();
+      };
+
+      cardForm.appendChild(form);
+      main.appendChild(cardForm);
+
+      // 3. Citas agendadas (para cancelar)
+      const cardList = document.createElement("section");
+      cardList.className = "card";
+      cardList.innerHTML = `<h2>Citas agendadas</h2>`;
+      const list = document.createElement("div");
+      list.className = "list";
+
+      const activas = state.appointments.filter((a) => a.estado !== "Cancelada");
+      if (activas.length === 0) {
+        list.innerHTML = `<p class="empty">No hay citas agendadas.</p>`;
+      } else {
+        activas.forEach((a) => {
+          const item = document.createElement("div");
+          item.className = "item";
+          item.innerHTML = `
+            <div class="item-top">
+              <strong>${a.nombre}</strong>
+              <span class="badge badge-${a.estado.toLowerCase()}">${a.estado}</span>
+            </div>
+            <div class="meta">${formatDate(a.fecha)} · ${a.hora}</div>
+            <div class="meta">Tel: ${a.telefono} · Motivo: ${a.motivo}</div>
+            <div class="meta">Recordatorio WhatsApp 24 h antes: ${a.recordatorio24h ? "Programado" : "Pendiente"}</div>
+          `;
+          const actions = document.createElement("div");
+          actions.className = "actions";
+          const btnCancel = document.createElement("button");
+          btnCancel.type = "button";
+          btnCancel.className = "btn btn-danger btn-sm";
+          btnCancel.textContent = "Cancelar cita";
+          btnCancel.onclick = () => {
+            a.estado = "Cancelada";
+            showToast(`Cita de ${a.nombre} cancelada.`);
+            render();
+          };
+          actions.appendChild(btnCancel);
+          item.appendChild(actions);
+          list.appendChild(item);
+        });
+      }
+
+      cardList.appendChild(list);
+      main.appendChild(cardList);
+    }
+
+    function renderRecepcion() {
+      const main = document.getElementById("view");
+      main.innerHTML = "";
+
+      const card = document.createElement("section");
+      card.className = "card";
+      card.innerHTML = `<h2>Gestión de citas (Recepción)</h2>`;
+
+      const list = document.createElement("div");
+      list.className = "list";
+
+      if (state.appointments.length === 0) {
+        list.innerHTML = `<p class="empty">No hay citas registradas.</p>`;
+      } else {
+        state.appointments.forEach((a) => {
+          const item = document.createElement("div");
+          item.className = "item";
+          item.innerHTML = `
+            <div class="item-top">
+              <strong>${a.nombre}</strong>
+              <span class="badge badge-${a.estado.toLowerCase()}">${a.estado}</span>
+            </div>
+            <div class="meta">${formatDate(a.fecha)} · ${a.hora}</div>
+            <div class="meta">Tel: ${a.telefono} · Motivo: ${a.motivo}</div>
+          `;
+
+          if (a.estado !== "Cancelada") {
+            const actions = document.createElement("div");
+            actions.className = "actions";
+
+            if (a.estado === "Pendiente") {
+              const btnConfirm = document.createElement("button");
+              btnConfirm.type = "button";
+              btnConfirm.className = "btn btn-primary btn-sm";
+              btnConfirm.textContent = "Confirmar";
+              btnConfirm.onclick = () => {
+                a.estado = "Confirmada";
+                showToast(`Cita de ${a.nombre} confirmada.`);
+                render();
+              };
+              actions.appendChild(btnConfirm);
+            }
+
+            const btnReprog = document.createElement("button");
+            btnReprog.type = "button";
+            btnReprog.className = "btn btn-outline btn-sm";
+            btnReprog.textContent = "Reprogramar";
+            btnReprog.onclick = () => {
+              state.reprogrammingId = state.reprogrammingId === a.id ? null : a.id;
+              render();
+            };
+            actions.appendChild(btnReprog);
+
+            const btnWa = document.createElement("a");
+            btnWa.className = "btn btn-wa btn-sm";
+            btnWa.href = buildWhatsAppLink(a);
+            btnWa.target = "_blank";
+            btnWa.rel = "noopener";
+            btnWa.textContent = "WhatsApp 24 h antes";
+            btnWa.onclick = () => {
+              a.recordatorio24h = true;
+              showToast(`Recordatorio WhatsApp 24 h antes listo para ${a.nombre}.`);
+            };
+            actions.appendChild(btnWa);
+
+            const btnCancel = document.createElement("button");
+            btnCancel.type = "button";
+            btnCancel.className = "btn btn-danger btn-sm";
+            btnCancel.textContent = "Cancelar";
+            btnCancel.onclick = () => {
+              a.estado = "Cancelada";
+              showToast(`Cita de ${a.nombre} cancelada.`);
+              render();
+            };
+            actions.appendChild(btnCancel);
+
+            item.appendChild(actions);
+
+            if (state.reprogrammingId === a.id) {
+              const box = document.createElement("form");
+              box.className = "reprogram-box";
+
+              const dateSelect = document.createElement("select");
+              DAYS.forEach((d) => {
+                const opt = document.createElement("option");
+                opt.value = d.iso;
+                opt.textContent = `${d.label} (${d.iso})`;
+                if (d.iso === a.fecha) opt.selected = true;
+                dateSelect.appendChild(opt);
+              });
+
+              const timeSelect = document.createElement("select");
+              function fillTimes(fecha) {
+                timeSelect.innerHTML = "";
+                HORARIOS_BASE.forEach((h) => {
+                  if (!isSlotTaken(fecha, h, a.id)) {
+                    const opt = document.createElement("option");
+                    opt.value = h;
+                    opt.textContent = h;
+                    if (h === a.hora && fecha === a.fecha) opt.selected = true;
+                    timeSelect.appendChild(opt);
+                  }
+                });
+              }
+              fillTimes(dateSelect.value);
+              dateSelect.onchange = () => fillTimes(dateSelect.value);
+
+              const saveBtn = document.createElement("button");
+              saveBtn.type = "submit";
+              saveBtn.className = "btn btn-primary btn-sm";
+              saveBtn.textContent = "Guardar nuevo horario";
+
+              box.appendChild(dateSelect);
+              box.appendChild(timeSelect);
+              box.appendChild(saveBtn);
+
+              box.onsubmit = (e) => {
+                e.preventDefault();
+                if (!timeSelect.value) {
+                  showToast("No hay horarios libres ese día.");
+                  return;
+                }
+                a.fecha = dateSelect.value;
+                a.hora = timeSelect.value;
+                state.reprogrammingId = null;
+                showToast(`Cita reprogramada para ${a.fecha} a las ${a.hora}.`);
+                render();
+              };
+
+              item.appendChild(box);
+            }
+          }
+
+          list.appendChild(item);
+        });
+      }
+
+      card.appendChild(list);
+      main.appendChild(card);
+    }
+
+    function renderMedico() {
+      const main = document.getElementById("view");
+      main.innerHTML = "";
+
+      const card = document.createElement("section");
+      card.className = "card";
+      card.innerHTML = `<h2>Agenda del día (Médico)</h2>`;
+      card.appendChild(renderDaySelector(render));
+
+      const list = document.createElement("div");
+      list.className = "list";
+      list.style.marginTop = "12px";
+
+      const citasDia = state.appointments
+        .filter((a) => a.fecha === state.selectedDate && a.estado !== "Cancelada")
+        .sort((a, b) => a.hora.localeCompare(b.hora));
+
+      if (citasDia.length === 0) {
+        list.innerHTML = `<p class="empty">No hay citas para este día.</p>`;
+      } else {
+        citasDia.forEach((a) => {
+          const item = document.createElement("div");
+          item.className = "item";
+          item.innerHTML = `
+            <div class="item-top">
+              <strong>${a.hora} · ${a.nombre}</strong>
+              <span class="badge badge-${a.estado.toLowerCase()}">${a.estado}</span>
+            </div>
+            <div class="meta">Motivo: ${a.motivo}</div>
+            <div class="meta">Teléfono: ${a.telefono}</div>
+          `;
+          list.appendChild(item);
+        });
+      }
+
+      card.appendChild(list);
+      main.appendChild(card);
+    }
+
+    function render() {
+      document.querySelectorAll(".role-tab").forEach((tab) => {
+        tab.classList.toggle("active", tab.dataset.role === state.role);
+      });
+
+      if (state.role === "paciente") renderPaciente();
+      else if (state.role === "recepcion") renderRecepcion();
+      else renderMedico();
+    }
+
+    document.querySelectorAll(".role-tab").forEach((tab) => {
+      tab.addEventListener("click", () => {
+        state.role = tab.dataset.role;
+        state.reprogrammingId = null;
+        render();
+      });
+    });
+
+    render();
+  </script>
+</body>
+</html>
