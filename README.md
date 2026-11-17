@@ -27,6 +27,8 @@ Código y guías de los videos cortos del **Laboratorio Ayemi**. Cada video plan
 | [`g2-git-github/`](g2-git-github/) | Git y GitHub: qué hace cada comando | G · Herramientas de desarrollador |
 | [`g3-ramas-pull-request/`](g3-ramas-pull-request/) | Ramas, merge y pull requests: prueba ideas sin romper tu proyecto | G · Herramientas de desarrollador |
 | [`g4-terminal-sin-miedo/`](g4-terminal-sin-miedo/) | La terminal sin miedo: diez comandos para empezar | G · Herramientas de desarrollador |
+| [`g5-zed/`](g5-zed/) | Zed: el editor que se presenta como el más rápido | G · Herramientas de desarrollador |
+| [`g5-vscode-vs-zed/`](g5-vscode-vs-zed/) | VS Code o Zed: ¿cuál usas tú? | G · Herramientas de desarrollador |
 | [`h1-stack-node/`](h1-stack-node/) | Qué es un stack: el stack de Node.js | H · Desarrollo web |
 | [`h2-react/`](h2-react/) | Qué es React: componentes, JSX, props y estado en 1 minuto | H · Desarrollo web |
 | [`p1-pedidos-en-whatsapp/`](p1-pedidos-en-whatsapp/) | Pedidos por WhatsApp sin libreta: catálogo, tablero y resumen del día (maqueta) | P · Casos |
