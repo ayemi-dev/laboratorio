@@ -1,0 +1,934 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Inventario · maqueta</title>
+<!--
+  Maqueta del video P3 del Laboratorio Ayemi: control de inventario para tienda de abarrotes
+  (registro de entradas y salidas, cálculo automático de existencias, exportación CSV y
+  pedido al proveedor por WhatsApp con enlace wa.me).
+  Un solo archivo, sin servidor ni dependencias: ábrelo en el navegador.
+  Los datos viven en la memoria de la página (se restauran al recargar).
+  Datos de ejemplo: ni la tienda, ni los productos, ni el proveedor son reales.
+-->
+<style>
+  :root {
+    --fondo: #0E1217;
+    --sup: #1A1D21;
+    --borde: #24282E;
+    --texto2: #949CA8;
+    --texto: #E2E8F0;
+    --cian: #0BC5EA;
+    --verde: #22C79B;
+    --atencion: #F5A524;
+    --error: #F0475E;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    background: var(--fondo);
+    color: var(--texto);
+    font: 500 26px/1.35 "Plus Jakarta Sans", system-ui, sans-serif;
+    overflow-x: hidden;
+  }
+  .mono { font-family: "JetBrains Mono", ui-monospace, monospace; }
+
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: var(--fondo);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 18px 24px 12px;
+    border-bottom: 2px solid var(--borde);
+  }
+  header h1 { margin: 0; font-size: 25px; font-weight: 700; line-height: 1.2; }
+  .ejemplo {
+    font-size: 18px;
+    color: var(--texto2);
+    border: 2px solid var(--borde);
+    border-radius: 999px;
+    padding: 4px 12px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .banda-alerta {
+    display: none;
+    background: rgba(245, 165, 36, 0.14);
+    border-bottom: 2px solid var(--atencion);
+    color: var(--atencion);
+    padding: 10px 24px;
+    font-size: 20px;
+    font-weight: 700;
+  }
+  .banda-alerta.visible { display: block; }
+
+  nav {
+    display: flex;
+    gap: 10px;
+    padding: 14px 24px 14px;
+  }
+  nav button {
+    flex: 1;
+    min-height: 48px;
+    font: inherit;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--texto2);
+    background: var(--sup);
+    border: 2px solid var(--borde);
+    border-radius: 16px;
+    padding: 10px 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+  nav button.activa {
+    color: var(--fondo);
+    background: var(--cian);
+    border-color: var(--cian);
+  }
+  .badge-tab {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 26px;
+    height: 26px;
+    padding: 0 7px;
+    border-radius: 999px;
+    font-size: 16px;
+    font-weight: 700;
+    background: var(--atencion);
+    color: var(--fondo);
+  }
+  .badge-tab:empty { display: none; }
+
+  main { padding: 0 24px 32px; }
+  .vista { display: none; }
+  .vista.activa { display: block; }
+
+  label, .grupo-titulo {
+    display: block;
+    font-size: 20px;
+    color: var(--texto2);
+    margin: 14px 0 6px;
+  }
+  select, input {
+    width: 100%;
+    min-height: 48px;
+    font: inherit;
+    font-size: 25px;
+    color: var(--texto);
+    background: var(--sup);
+    border: 2px solid var(--borde);
+    border-radius: 16px;
+    padding: 10px 16px;
+  }
+  select:focus, input:focus { border-color: var(--cian); }
+  select:focus-visible, input:focus-visible, button:focus-visible, a:focus-visible, tr:focus-visible {
+    outline: 2px solid var(--cian);
+    outline-offset: 2px;
+  }
+
+  .tipos {
+    display: flex;
+    gap: 10px;
+  }
+  .tipo-btn {
+    flex: 1;
+    min-height: 48px;
+    font: inherit;
+    font-size: 25px;
+    font-weight: 600;
+    color: var(--texto);
+    background: var(--sup);
+    border: 2px solid var(--borde);
+    border-radius: 14px;
+    padding: 10px;
+    cursor: pointer;
+  }
+  .tipo-btn.activo {
+    border-color: var(--cian);
+    background: rgba(11, 197, 234, 0.14);
+    color: var(--cian);
+  }
+
+  .principal {
+    width: 100%;
+    min-height: 54px;
+    margin-top: 16px;
+    font: inherit;
+    font-size: 25px;
+    font-weight: 700;
+    color: var(--fondo);
+    background: var(--cian);
+    border: 0;
+    border-radius: 18px;
+    padding: 14px;
+    cursor: pointer;
+  }
+  .secundario {
+    width: 100%;
+    min-height: 50px;
+    margin-top: 14px;
+    font: inherit;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--cian);
+    background: var(--sup);
+    border: 2px solid var(--cian);
+    border-radius: 16px;
+    padding: 12px 16px;
+    cursor: pointer;
+  }
+
+  .aviso {
+    margin-top: 14px;
+    padding: 14px 18px;
+    border-radius: 16px;
+    background: var(--sup);
+    border: 2px solid var(--verde);
+    color: var(--verde);
+    font-size: 20px;
+    font-weight: 600;
+    display: none;
+  }
+  .aviso.visible { display: block; }
+  .aviso.err {
+    border-color: var(--error);
+    color: var(--error);
+  }
+
+  /* Movimientos de hoy */
+  .lista-movs {
+    display: grid;
+    gap: 8px;
+    margin-top: 8px;
+    max-height: 162px;
+    overflow-y: auto;
+    padding-right: 4px;
+  }
+  .mov-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    background: var(--sup);
+    border: 2px solid var(--borde);
+    border-radius: 14px;
+    padding: 12px 14px;
+    font-size: 20px;
+  }
+  .mov-item.nuevo {
+    border-color: var(--cian);
+    box-shadow: 0 0 0 2px rgba(11, 197, 234, 0.3);
+  }
+  .mov-izq {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .mov-prod { font-weight: 700; color: var(--texto); }
+  .mov-meta { font-size: 18px; color: var(--texto2); }
+  .mov-cant {
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-weight: 700;
+    font-size: 20px;
+    white-space: nowrap;
+  }
+  .mov-cant.ent { color: var(--verde); }
+  .mov-cant.sal { color: var(--atencion); }
+
+  /* Tabla de existencias */
+  .tabla-env {
+    width: 100%;
+    background: var(--sup);
+    border: 2px solid var(--borde);
+    border-radius: 18px;
+    overflow: hidden;
+    margin-top: 6px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  th, td {
+    padding: 12px 10px;
+    text-align: left;
+    border-bottom: 1px solid var(--borde);
+    font-size: 20px;
+  }
+  th {
+    color: var(--texto2);
+    font-size: 18px;
+    font-weight: 600;
+  }
+  tbody tr {
+    cursor: pointer;
+  }
+  tbody tr:last-child td { border-bottom: 0; }
+  tbody tr.seleccionada {
+    background: rgba(11, 197, 234, 0.12);
+  }
+  tbody tr.baja {
+    background: rgba(245, 165, 36, 0.10);
+  }
+  tbody tr.baja td:first-child {
+    border-left: 4px solid var(--atencion);
+  }
+  .num {
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    text-align: center;
+    font-weight: 700;
+  }
+  .estado-ok {
+    color: var(--verde);
+    font-weight: 600;
+    font-size: 18px;
+  }
+  .estado-baja {
+    color: var(--atencion);
+    font-weight: 700;
+    font-size: 18px;
+  }
+
+  .detalle-box {
+    display: none;
+    margin-top: 12px;
+    padding: 14px 16px;
+    background: var(--sup);
+    border: 2px solid var(--cian);
+    border-radius: 16px;
+    font-size: 20px;
+  }
+  .detalle-box.visible { display: block; }
+  .detalle-titulo { font-weight: 700; margin-bottom: 4px; color: var(--texto); }
+  .detalle-formula {
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    color: var(--cian);
+    font-size: 20px;
+  }
+
+  /* Por surtir */
+  .vacio {
+    font-size: 20px;
+    color: var(--texto2);
+    background: var(--sup);
+    border: 2px solid var(--borde);
+    border-radius: 16px;
+    padding: 18px;
+    text-align: center;
+    margin-top: 8px;
+  }
+  .tarjeta {
+    background: var(--sup);
+    border: 2px solid var(--atencion);
+    border-radius: 18px;
+    padding: 16px;
+    margin-top: 10px;
+  }
+  .tarjeta .fila {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+  }
+  .tarjeta .nombre { font-size: 25px; font-weight: 700; }
+  .tarjeta .estado-prep {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--verde);
+    border: 2px solid var(--verde);
+    border-radius: 999px;
+    padding: 3px 10px;
+  }
+  .tarjeta .detalle {
+    font-size: 20px;
+    color: var(--atencion);
+    margin-top: 4px;
+    font-weight: 600;
+  }
+  .tarjeta .pedir-fila {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 12px;
+  }
+  .tarjeta .pedir-fila label {
+    margin: 0;
+    flex: 1;
+    color: var(--texto);
+  }
+  .tarjeta .pedir-fila input {
+    width: 110px;
+    text-align: center;
+  }
+  .btn-wa {
+    width: 100%;
+    min-height: 48px;
+    margin-top: 12px;
+    font: inherit;
+    font-size: 20px;
+    font-weight: 700;
+    border-radius: 14px;
+    padding: 12px;
+    cursor: pointer;
+    background: var(--fondo);
+    color: var(--verde);
+    border: 2px solid var(--verde);
+  }
+
+  /* Modales de vista previa */
+  .modal {
+    position: fixed;
+    inset: 0;
+    z-index: 20;
+    background: rgba(14, 18, 23, 0.90);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .modal.abierto { display: flex; }
+  .caja {
+    background: var(--sup);
+    border: 2px solid var(--verde);
+    border-radius: 22px;
+    padding: 20px;
+    width: 100%;
+    max-width: 680px;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  .caja.csv-caja { border-color: var(--cian); }
+  .caja h3 { margin: 0 0 12px; font-size: 25px; }
+  .burbuja {
+    background: var(--fondo);
+    border-radius: 16px;
+    padding: 14px 16px;
+    margin-bottom: 12px;
+    font-size: 20px;
+  }
+  .csv-pre {
+    background: var(--fondo);
+    border: 1px solid var(--borde);
+    border-radius: 14px;
+    padding: 14px 16px;
+    margin: 0 0 14px;
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 18px;
+    line-height: 1.5;
+    color: var(--texto);
+    overflow-x: auto;
+    white-space: pre;
+  }
+  .enlace {
+    font-size: 18px;
+    color: var(--cian);
+    word-break: break-all;
+    margin-bottom: 16px;
+  }
+  .caja-acciones {
+    display: flex;
+    gap: 10px;
+  }
+  .caja-acciones a, .caja-acciones button {
+    flex: 1;
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    text-decoration: none;
+    font: inherit;
+    font-size: 20px;
+    font-weight: 700;
+    border-radius: 14px;
+    padding: 10px 12px;
+    cursor: pointer;
+  }
+  .caja-acciones a {
+    background: var(--verde);
+    color: var(--fondo);
+    border: 0;
+  }
+  .caja-acciones button {
+    background: var(--fondo);
+    color: var(--texto);
+    border: 2px solid var(--borde);
+  }
+
+  @media (max-width: 500px) {
+    html, body { font-size: 16px; }
+    header { padding: 12px 14px 10px; }
+    header h1 { font-size: 18px; }
+    .ejemplo { font-size: 12px; padding: 3px 10px; }
+    .banda-alerta { padding: 8px 14px; font-size: 12px; }
+    nav { padding: 10px 14px 12px; gap: 6px; }
+    nav button { font-size: 12px; min-height: 44px; padding: 8px 4px; }
+    .badge-tab { min-width: 20px; height: 20px; font-size: 11px; padding: 0 5px; }
+    main { padding: 0 14px 24px; }
+    label, .grupo-titulo { font-size: 12px; }
+    select, input { font-size: 14px; min-height: 44px; padding: 8px 12px; }
+    .tipo-btn { font-size: 14px; min-height: 44px; }
+    .principal { font-size: 14px; min-height: 46px; padding: 10px; }
+    .secundario { font-size: 14px; min-height: 44px; padding: 10px; }
+    .aviso { font-size: 12px; padding: 10px 12px; }
+    .mov-item { font-size: 12px; padding: 10px 12px; }
+    .mov-meta { font-size: 12px; }
+    .mov-cant { font-size: 14px; }
+    th, td { padding: 9px 6px; font-size: 12px; }
+    th { font-size: 12px; }
+    .estado-ok, .estado-baja { font-size: 12px; }
+    .detalle-box, .detalle-formula { font-size: 12px; }
+    .vacio { font-size: 14px; }
+    .tarjeta .nombre { font-size: 16px; }
+    .tarjeta .estado-prep { font-size: 12px; }
+    .tarjeta .detalle { font-size: 12px; }
+    .btn-wa { font-size: 14px; min-height: 44px; }
+    .caja h3 { font-size: 16px; }
+    .burbuja { font-size: 14px; }
+    .csv-pre { font-size: 12px; }
+    .enlace { font-size: 12px; }
+    .caja-acciones a, .caja-acciones button { font-size: 14px; min-height: 44px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Tienda de abarrotes · Inventario</h1>
+  <span class="ejemplo">Datos de ejemplo</span>
+</header>
+
+<div id="banda-alerta" class="banda-alerta" role="status"></div>
+
+<nav aria-label="Secciones">
+  <button id="tab-registrar" class="activa" data-vista="registrar">Registrar</button>
+  <button id="tab-existencias" data-vista="existencias">Existencias</button>
+  <button id="tab-surtir" data-vista="surtir">Por surtir <span id="tab-surtir-num" class="badge-tab"></span></button>
+</nav>
+
+<main>
+  <section id="vista-registrar" class="vista activa">
+    <label for="campo-producto">Producto</label>
+    <select id="campo-producto"></select>
+
+    <div class="grupo-titulo">Tipo</div>
+    <div class="tipos">
+      <button type="button" id="btn-entrada" class="tipo-btn" data-tipo="Entrada">Entrada</button>
+      <button type="button" id="btn-salida" class="tipo-btn activo" data-tipo="Salida">Salida</button>
+    </div>
+
+    <label for="campo-motivo">Motivo</label>
+    <select id="campo-motivo"></select>
+
+    <label for="campo-cantidad">Cantidad</label>
+    <input id="campo-cantidad" type="number" min="1" step="1" value="1">
+
+    <button id="btn-guardar" class="principal" type="button">Guardar movimiento</button>
+    <div id="aviso-reg" class="aviso" role="status"></div>
+
+    <div class="grupo-titulo">Movimientos de hoy</div>
+    <div id="lista-movimientos" class="lista-movs"></div>
+  </section>
+
+  <section id="vista-existencias" class="vista">
+    <div class="tabla-env">
+      <table>
+        <thead>
+          <tr>
+            <th>Producto</th>
+            <th class="num">Existencia</th>
+            <th class="num">Mínimo</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody id="cuerpo-existencias"></tbody>
+      </table>
+    </div>
+
+    <div id="detalle-producto" class="detalle-box">
+      <div id="detalle-titulo" class="detalle-titulo"></div>
+      <div id="detalle-formula" class="detalle-formula"></div>
+    </div>
+
+    <button id="btn-csv" class="secundario" type="button">Descargar existencias (CSV)</button>
+  </section>
+
+  <section id="vista-surtir" class="vista">
+    <div id="lista-surtir"></div>
+  </section>
+</main>
+
+<div id="modal-csv" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-csv-titulo">
+  <div class="caja csv-caja">
+    <h3 id="modal-csv-titulo">Archivo existencias-ejemplo.csv</h3>
+    <pre id="csv-vista" class="csv-pre"></pre>
+    <div class="caja-acciones">
+      <button id="btn-cerrar-csv" type="button">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<div id="modal-wa" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-wa-titulo">
+  <div class="caja">
+    <h3 id="modal-wa-titulo">Vista previa del mensaje</h3>
+    <div id="wa-texto" class="burbuja"></div>
+    <div id="wa-enlace" class="enlace mono"></div>
+    <div class="caja-acciones">
+      <a id="btn-abrir-wa" href="#" target="_blank" rel="noopener">Abrir WhatsApp</a>
+      <button id="btn-cerrar-wa" type="button">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/*
+  Referencias técnicas verificadas:
+  [1] Enlace wa.me con mensaje predefinido (Centro de ayuda de WhatsApp):
+      https://faq.whatsapp.com/5913398998672934/?locale=es_LA
+      Formato: https://wa.me/52<telefono>?text=<mensaje_codificado>
+  [5] CSV UTF-8 con BOM para conservar acentos al abrir en Excel (Soporte de Microsoft):
+      https://support.microsoft.com/es-es/office/abrir-archivos-csv-utf-8-correctamente-en-excel-8a935af5-3416-4edd-ba7e-3dfd2bc4a032
+  [6] Formato CSV con encabezado opcional, comas y fin de línea CRLF (RFC 4180):
+      https://www.rfc-editor.org/rfc/rfc4180
+*/
+
+const PROVEEDOR = { nombre: "Proveedor A", telefono: "0000000000" };
+
+const MOTIVOS = {
+  Entrada: ["Compra al proveedor", "Devolución de cliente"],
+  Salida: ["Venta", "Producto dañado"]
+};
+
+const PRODUCTOS = [
+  { id: "arroz",  nombre: "Arroz 1 kg",      inicial: 10, minimo: 8 },
+  { id: "frijol", nombre: "Frijol 1 kg",     inicial: 15, minimo: 8 },
+  { id: "aceite", nombre: "Aceite 1 L",      inicial: 9,  minimo: 6 },
+  { id: "azucar", nombre: "Azúcar 1 kg",     inicial: 12, minimo: 6 },
+  { id: "huevo",  nombre: "Huevo 12 piezas", inicial: 8,  minimo: 5 },
+  { id: "jabon",  nombre: "Jabón de barra",  inicial: 6,  minimo: 4 }
+];
+
+/* Movimientos iniciales en orden cronológico (el más reciente va al principio de la lista visual). */
+const MOVIMIENTOS_INICIALES = [
+  { productoId: "arroz",  tipo: "Entrada", motivo: "Compra al proveedor", cantidad: 12 },
+  { productoId: "arroz",  tipo: "Salida",  motivo: "Venta",               cantidad: 3  },
+  { productoId: "frijol", tipo: "Salida",  motivo: "Venta",               cantidad: 4  },
+  { productoId: "aceite", tipo: "Salida",  motivo: "Venta",               cantidad: 1  },
+  { productoId: "azucar", tipo: "Salida",  motivo: "Venta",               cantidad: 2  },
+  { productoId: "jabon",  tipo: "Entrada", motivo: "Compra al proveedor", cantidad: 6  }
+];
+
+let movimientos = [...MOVIMIENTOS_INICIALES].reverse();
+let tipoActual = "Salida";
+let ultimoMovimientoRecienGuardado = false;
+let productoSeleccionadoId = null;
+const mensajesPreparados = {};
+const cantidadesPedir = {};
+
+function resumenProducto(prod) {
+  let entradas = 0;
+  let salidas = 0;
+  for (const m of movimientos) {
+    if (m.productoId !== prod.id) continue;
+    if (m.tipo === "Entrada") entradas += m.cantidad;
+    else salidas += m.cantidad;
+  }
+  const existencia = prod.inicial + entradas - salidas;
+  const porSurtir = existencia <= prod.minimo;
+  return {
+    ...prod,
+    entradas,
+    salidas,
+    existencia,
+    estado: porSurtir ? "Por surtir" : "Suficiente",
+    porSurtir
+  };
+}
+
+function obtenerResumenes() {
+  return PRODUCTOS.map(resumenProducto);
+}
+
+function llenarSelectProductos() {
+  const sel = document.getElementById("campo-producto");
+  sel.innerHTML = "";
+  for (const p of PRODUCTOS) {
+    const opt = document.createElement("option");
+    opt.value = p.id;
+    opt.textContent = p.nombre;
+    sel.appendChild(opt);
+  }
+}
+
+function llenarSelectMotivos() {
+  const sel = document.getElementById("campo-motivo");
+  sel.innerHTML = "";
+  for (const m of MOTIVOS[tipoActual]) {
+    const opt = document.createElement("option");
+    opt.value = m;
+    opt.textContent = m;
+    sel.appendChild(opt);
+  }
+}
+
+function renderBandaAlerta(resumenes) {
+  const bajos = resumenes.filter(r => r.porSurtir);
+  const banda = document.getElementById("banda-alerta");
+  const badge = document.getElementById("tab-surtir-num");
+  if (bajos.length === 0) {
+    banda.classList.remove("visible");
+    banda.textContent = "";
+    badge.textContent = "";
+  } else {
+    const sufijo = bajos.length === 1 ? "1 producto por surtir" : `${bajos.length} productos por surtir`;
+    banda.textContent = `Existencias bajas: ${sufijo}`;
+    banda.classList.add("visible");
+    badge.textContent = String(bajos.length);
+  }
+}
+
+function renderMovimientos() {
+  const cont = document.getElementById("lista-movimientos");
+  cont.innerHTML = "";
+  movimientos.forEach((m, idx) => {
+    const prod = PRODUCTOS.find(p => p.id === m.productoId);
+    const div = document.createElement("div");
+    div.className = "mov-item" + (ultimoMovimientoRecienGuardado && idx === 0 ? " nuevo" : "");
+    const signo = m.tipo === "Entrada" ? "+" : "−";
+    const claseCant = m.tipo === "Entrada" ? "ent" : "sal";
+    div.innerHTML = `
+      <div class="mov-izq">
+        <span class="mov-prod">${prod.nombre}</span>
+        <span class="mov-meta">${m.tipo} · ${m.motivo}</span>
+      </div>
+      <span class="mov-cant ${claseCant}">${signo}${m.cantidad}</span>
+    `;
+    cont.appendChild(div);
+  });
+}
+
+function renderExistencias(resumenes) {
+  const tbody = document.getElementById("cuerpo-existencias");
+  tbody.innerHTML = "";
+  for (const r of resumenes) {
+    const tr = document.createElement("tr");
+    tr.dataset.id = r.id;
+    tr.tabIndex = 0;
+    tr.setAttribute("role", "button");
+    const clases = [];
+    if (r.porSurtir) clases.push("baja");
+    if (productoSeleccionadoId === r.id) clases.push("seleccionada");
+    tr.className = clases.join(" ");
+    tr.innerHTML = `
+      <td>${r.nombre}</td>
+      <td class="num">${r.existencia}</td>
+      <td class="num">${r.minimo}</td>
+      <td class="${r.porSurtir ? "estado-baja" : "estado-ok"}">${r.estado}</td>
+    `;
+    const seleccionar = () => {
+      productoSeleccionadoId = r.id;
+      renderDetalle(r);
+      renderExistencias(obtenerResumenes());
+    };
+    tr.addEventListener("click", seleccionar);
+    tr.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        seleccionar();
+      }
+    });
+    tbody.appendChild(tr);
+  }
+}
+
+function renderDetalle(r) {
+  const box = document.getElementById("detalle-producto");
+  if (!r) {
+    box.classList.remove("visible");
+    return;
+  }
+  document.getElementById("detalle-titulo").textContent = r.nombre;
+  document.getElementById("detalle-formula").textContent =
+    `Inicial ${r.inicial} + Entradas ${r.entradas} − Salidas ${r.salidas} = ${r.existencia}`;
+  box.classList.add("visible");
+}
+
+function renderSurtir(resumenes) {
+  const cont = document.getElementById("lista-surtir");
+  const bajos = resumenes.filter(r => r.porSurtir);
+  cont.innerHTML = "";
+  if (bajos.length === 0) {
+    const p = document.createElement("div");
+    p.className = "vacio";
+    p.textContent = "Nada por surtir.";
+    cont.appendChild(p);
+    return;
+  }
+  for (const r of bajos) {
+    const sugerido = Math.max(1, 2 * r.minimo - r.existencia);
+    if (!(r.id in cantidadesPedir)) cantidadesPedir[r.id] = sugerido;
+    const card = document.createElement("div");
+    card.className = "tarjeta";
+    card.dataset.id = r.id;
+
+    const prepBadge = mensajesPreparados[r.id]
+      ? `<span class="estado-prep">Mensaje preparado</span>`
+      : "";
+
+    card.innerHTML = `
+      <div class="fila">
+        <span class="nombre">${r.nombre}</span>
+        ${prepBadge}
+      </div>
+      <div class="detalle">Quedan ${r.existencia} · mínimo ${r.minimo}</div>
+      <div class="pedir-fila">
+        <label for="pedir-${r.id}">Cantidad a pedir</label>
+        <input id="pedir-${r.id}" type="number" min="1" step="1" value="${cantidadesPedir[r.id]}">
+      </div>
+      <button type="button" class="btn-wa" data-id="${r.id}">Pedir al proveedor por WhatsApp</button>
+    `;
+
+    const inp = card.querySelector("input");
+    inp.addEventListener("input", () => {
+      const val = parseInt(inp.value, 10);
+      if (val >= 1) cantidadesPedir[r.id] = val;
+    });
+
+    card.querySelector(".btn-wa").addEventListener("click", () => {
+      const cant = Math.max(1, parseInt(inp.value, 10) || sugerido);
+      cantidadesPedir[r.id] = cant;
+      abrirModalWhatsApp(r, cant);
+    });
+
+    cont.appendChild(card);
+  }
+}
+
+function generarTextoCsv(resumenes) {
+  const lineas = ["Producto,Existencia,Mínimo,Estado"];
+  for (const r of resumenes) {
+    lineas.push(`${r.nombre},${r.existencia},${r.minimo},${r.estado}`);
+  }
+  return lineas.join("\r\n") + "\r\n";
+}
+
+function descargarCsv() {
+  const resumenes = obtenerResumenes();
+  const contenido = generarTextoCsv(resumenes);
+  const blob = new Blob(["\uFEFF" + contenido], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "existencias-ejemplo.csv";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+
+  document.getElementById("csv-vista").textContent = contenido.trimEnd();
+  document.getElementById("modal-csv").classList.add("abierto");
+}
+
+let productoModalWaId = null;
+
+function abrirModalWhatsApp(r, cant) {
+  productoModalWaId = r.id;
+  const texto = `Hola, ${PROVEEDOR.nombre}. Para la tienda necesito ${cant} piezas de ${r.nombre}. ¿Me confirmas cuándo pueden llegar? Gracias.`;
+  const enlace = `https://wa.me/52${PROVEEDOR.telefono}?text=${encodeURIComponent(texto)}`;
+  document.getElementById("wa-texto").textContent = texto;
+  document.getElementById("wa-enlace").textContent = enlace;
+  document.getElementById("btn-abrir-wa").href = enlace;
+  document.getElementById("modal-wa").classList.add("abierto");
+}
+
+function actualizarTodo() {
+  const resumenes = obtenerResumenes();
+  renderBandaAlerta(resumenes);
+  renderMovimientos();
+  renderExistencias(resumenes);
+  if (productoSeleccionadoId) {
+    const sel = resumenes.find(r => r.id === productoSeleccionadoId);
+    renderDetalle(sel);
+  }
+  renderSurtir(resumenes);
+}
+
+function cambiarVista(vistaId) {
+  document.querySelectorAll("nav button").forEach(b => {
+    b.classList.toggle("activa", b.dataset.vista === vistaId);
+  });
+  document.querySelectorAll(".vista").forEach(v => {
+    v.classList.toggle("activa", v.id === "vista-" + vistaId);
+  });
+}
+
+document.querySelectorAll("nav button").forEach(btn => {
+  btn.addEventListener("click", () => cambiarVista(btn.dataset.vista));
+});
+
+document.querySelectorAll(".tipo-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    tipoActual = btn.dataset.tipo;
+    document.querySelectorAll(".tipo-btn").forEach(b => b.classList.toggle("activo", b === btn));
+    llenarSelectMotivos();
+  });
+});
+
+document.getElementById("btn-guardar").addEventListener("click", () => {
+  const prodId = document.getElementById("campo-producto").value;
+  const motivo = document.getElementById("campo-motivo").value;
+  const cantRaw = document.getElementById("campo-cantidad").value;
+  const cantidad = parseInt(cantRaw, 10);
+  const aviso = document.getElementById("aviso-reg");
+
+  if (!Number.isInteger(cantidad) || cantidad < 1) {
+    aviso.textContent = "Escribe una cantidad entera de 1 en adelante.";
+    aviso.className = "aviso err visible";
+    return;
+  }
+
+  const prod = PRODUCTOS.find(p => p.id === prodId);
+  const res = resumenProducto(prod);
+
+  if (tipoActual === "Salida" && cantidad > res.existencia) {
+    aviso.textContent = `No hay suficiente: quedan ${res.existencia}.`;
+    aviso.className = "aviso err visible";
+    return;
+  }
+
+  movimientos.unshift({ productoId: prodId, tipo: tipoActual, motivo, cantidad });
+  ultimoMovimientoRecienGuardado = true;
+  aviso.textContent = `Movimiento guardado: ${prod.nombre}.`;
+  aviso.className = "aviso visible";
+  actualizarTodo();
+});
+
+document.getElementById("btn-csv").addEventListener("click", descargarCsv);
+document.getElementById("btn-cerrar-csv").addEventListener("click", () => {
+  document.getElementById("modal-csv").classList.remove("abierto");
+});
+
+document.getElementById("btn-cerrar-wa").addEventListener("click", () => {
+  document.getElementById("modal-wa").classList.remove("abierto");
+  if (productoModalWaId) {
+    mensajesPreparados[productoModalWaId] = true;
+    actualizarTodo();
+  }
+});
+
+llenarSelectProductos();
+llenarSelectMotivos();
+actualizarTodo();
+</script>
+</body>
+</html>
