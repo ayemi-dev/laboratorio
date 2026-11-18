@@ -27,6 +27,7 @@ Código y guías de los videos cortos del **Laboratorio Ayemi**. Cada video plan
 | [`f3-stm32-wokwi/`](f3-stm32-wokwi/) | Un STM32 Blue Pill simulado: ADC de 12 bits, PWM y OLED | F · Microcontroladores |
 | [`f4-pico-micropython/`](f4-pico-micropython/) | Una Raspberry Pi Pico simulada en el navegador, y esta vez en Python | F · Microcontroladores |
 | [`f5-kicad-primera-placa/`](f5-kicad-primera-placa/) | De protoboard a placa con KiCad | F · Microcontroladores |
+| [`f6-wokwi-vscode/`](f6-wokwi-vscode/) | El mismo LED, compilado en tu compu y listo para simular en VS Code (PlatformIO + Wokwi) | F · Microcontroladores |
 | [`g1-vscode/`](g1-vscode/) | VS Code: gratis, de código abierto y tres atajos | G · Herramientas de desarrollador |
 | [`g2-git-github/`](g2-git-github/) | Git y GitHub: qué hace cada comando | G · Herramientas de desarrollador |
 | [`g3-ramas-pull-request/`](g3-ramas-pull-request/) | Ramas, merge y pull requests: prueba ideas sin romper tu proyecto | G · Herramientas de desarrollador |
