@@ -8,6 +8,7 @@ Código y guías de los videos cortos del **Laboratorio Ayemi**. Cada video plan
 | [`a9-github-pages/`](a9-github-pages/) | Tu página gratis con GitHub Pages y su letra chiquita | A · Gratis y oficial |
 | [`a10-veo-gemini/`](a10-veo-gemini/) | Veo en la app de Gemini: tres prompts de prueba y qué salió | A · Gratis y oficial |
 | [`a11-cloudflare-tunnel/`](a11-cloudflare-tunnel/) | Cloudflare Tunnel: tu proyecto en internet sin abrir puertos | A · Gratis y oficial |
+| [`a13-canvas-estudiar/`](a13-canvas-estudiar/) | Canvas de Gemini para estudiar y simular tu examen | A · Gratis y oficial |
 | [`c1-idea-requisitos/`](c1-idea-requisitos/) | De la idea a los requisitos con IA | C · Web moderna |
 | [`c2-requisitos-maqueta/`](c2-requisitos-maqueta/) | De los requisitos a la maqueta con IA | C · Web moderna |
 | [`c3-react-vite-tailwind/`](c3-react-vite-tailwind/) | De la maqueta a React, Vite y Tailwind en 1 minuto | C · Web moderna |
@@ -22,6 +23,7 @@ Código y guías de los videos cortos del **Laboratorio Ayemi**. Cada video plan
 | [`e3-openscad/`](e3-openscad/) | Un soporte para celular paramétrico en OpenSCAD | E · Modelado 3D con código |
 | [`e4-stl-a-gcode/`](e4-stl-a-gcode/) | Del STL al G-code: el soporte para celular, listo para imprimir con PrusaSlicer | E · Modelado 3D con código |
 | [`e5-blender/`](e5-blender/) | La misma pieza en Blender: un render presentable del soporte, gratis | E · Modelado 3D con código |
+| [`e6-emi-en-blender/`](e6-emi-en-blender/) | Emi en 3D con Blender, y te lo regalamos | E · Modelado 3D con código |
 | [`af1-wokwi-arduino/`](af1-wokwi-arduino/) | Simula un Arduino gratis en el navegador | F · Microcontroladores |
 | [`f2-wokwi-esp32/`](f2-wokwi-esp32/) | Un ESP32 simulado que consulta el clima en internet | F · Microcontroladores |
 | [`f3-stm32-wokwi/`](f3-stm32-wokwi/) | Un STM32 Blue Pill simulado: ADC de 12 bits, PWM y OLED | F · Microcontroladores |
@@ -48,6 +50,7 @@ Código y guías de los videos cortos del **Laboratorio Ayemi**. Cada video plan
 
 - **Código** (`*.py`, `*.js`, `*.ino`, configuraciones): [MIT](LICENSE).
 - **Guías y textos** (`*.md`): [CC BY-SA 4.0](LICENSE-GUIAS.md).
+- **Emi** (los archivos de `e6-emi-en-blender/` que no son código): CC BY-NC-ND 4.0, ver `e6-emi-en-blender/LICENCIA-EMI.md`.
 
 Los datos de terceros (ofertas, límites y precios) se verificaron en la fecha que indica cada guía y pueden cambiar. Ayemi no tiene relación con las empresas que se mencionan.
 
