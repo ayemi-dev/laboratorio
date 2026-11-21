@@ -1,0 +1,31 @@
+{
+  "version": 1,
+  "author": "Anonymous maker",
+  "editor": "wokwi",
+  "parts": [
+    {
+      "id": "pico",
+      "type": "wokwi-pi-pico",
+      "top": 50,
+      "left": 70,
+      "attrs": {
+        "env": "micropython-20260406-v1.28.0"
+      }
+    },
+    {
+      "id": "sensor",
+      "type": "wokwi-dht22",
+      "top": -75,
+      "left": 230,
+      "attrs": {
+        "temperature": "24",
+        "humidity": "40"
+      }
+    }
+  ],
+  "connections": [
+    [ "sensor:VCC", "pico:3V3", "red", [ "v0" ] ],
+    [ "sensor:GND", "pico:GND.8", "black", [ "v0" ] ],
+    [ "sensor:SDA", "pico:GP22", "green", [ "v0" ] ]
+  ]
+}
