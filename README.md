@@ -30,6 +30,7 @@ Código y guías de los videos cortos del **Laboratorio Ayemi**. Cada video plan
 | [`f4-pico-micropython/`](f4-pico-micropython/) | Una Raspberry Pi Pico simulada en el navegador, y esta vez en Python | F · Microcontroladores |
 | [`f5-kicad-primera-placa/`](f5-kicad-primera-placa/) | De protoboard a placa con KiCad | F · Microcontroladores |
 | [`f6-wokwi-vscode/`](f6-wokwi-vscode/) | El mismo LED, compilado en tu compu y listo para simular en VS Code (PlatformIO + Wokwi) | F · Microcontroladores |
+| [`f7-oled-animacion/`](f7-oled-animacion/) | Una animación en una OLED de 0.96" con un ESP32 | F · Microcontroladores |
 | [`g1-vscode/`](g1-vscode/) | VS Code: gratis, de código abierto y tres atajos | G · Herramientas de desarrollador |
 | [`g2-git-github/`](g2-git-github/) | Git y GitHub: qué hace cada comando | G · Herramientas de desarrollador |
 | [`g3-ramas-pull-request/`](g3-ramas-pull-request/) | Ramas, merge y pull requests: prueba ideas sin romper tu proyecto | G · Herramientas de desarrollador |
@@ -37,12 +38,18 @@ Código y guías de los videos cortos del **Laboratorio Ayemi**. Cada video plan
 | [`g5-zed/`](g5-zed/) | Zed: el editor que se presenta como el más rápido | G · Herramientas de desarrollador |
 | [`g5-vscode-vs-zed/`](g5-vscode-vs-zed/) | VS Code o Zed: ¿cuál usas tú? | G · Herramientas de desarrollador |
 | [`g6-docker/`](g6-docker/) | Docker: «en mi máquina sí funciona» | G · Herramientas de desarrollador |
+| [`g10-cli-mcp-api-agentes/`](g10-cli-mcp-api-agentes/) | CLI, API, modelo, agente y MCP en un minuto | G · Herramientas de desarrollador |
+| [`g7-git-deshacer/`](g7-git-deshacer/) | Deshacer sin miedo en Git: restore, revert y reset | G · Herramientas de desarrollador |
+| [`g8-conflictos-merge/`](g8-conflictos-merge/) | El conflicto, resuelto: de los marcadores al pull request unido | G · Herramientas de desarrollador |
+| [`g9-terminal-scripts/`](g9-terminal-scripts/) | La terminal, nivel 2: tuberías, redirecciones y tu primer script | G · Herramientas de desarrollador |
+| [`g11-mundo-abierto/`](g11-mundo-abierto/) | ¿Cómo se programa un mundo abierto? Una demo con bloques, detalle y A* | G · Herramientas de desarrollador |
 | [`h1-stack-node/`](h1-stack-node/) | Qué es un stack: el stack de Node.js | H · Desarrollo web |
 | [`h2-react/`](h2-react/) | Qué es React: componentes, JSX, props y estado en 1 minuto | H · Desarrollo web |
 | [`h3-sqlite/`](h3-sqlite/) | SQLite: la base de datos que es un solo archivo. Crear, insertar y consultar con Node | H · Desarrollo web |
 | [`p1-pedidos-en-whatsapp/`](p1-pedidos-en-whatsapp/) | Pedidos por WhatsApp sin libreta: catálogo, tablero y resumen del día (maqueta) | P · Casos |
 | [`p2-citas-por-whatsapp/`](p2-citas-por-whatsapp/) | Citas por WhatsApp que se cruzan: agenda en línea, confirmación y recordatorio (maqueta) | P · Casos |
 | [`p3-inventario-tienda/`](p3-inventario-tienda/) | El inventario de tu tienda nunca cuadra: entradas y salidas, existencia al día y alerta de mínimo (maqueta) | P · Casos |
+| [`x1-gracias-100-instagram/`](x1-gracias-100-instagram/) | Gracias: la guía de todo el Laboratorio | Pieza suelta |
 
 **¿Necesitas algo más específico? Lo construimos:** https://ayemi.org/enlaces
 

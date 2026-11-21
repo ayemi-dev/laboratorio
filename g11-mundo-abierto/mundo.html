@@ -1,0 +1,434 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mundo abierto en miniatura · Laboratorio Ayemi</title>
+<!--
+  Demo del video «¿Cómo se programa un mundo como el de GTA?» del Laboratorio Ayemi.
+  Un solo archivo, sin instalar nada: ábrelo con doble clic en tu navegador.
+  Es una demo propia y simplificada: no usa código, gráficos ni datos de ningún juego.
+  Ayemi no tiene relación con Rockstar Games ni con Take-Two.
+
+  Tres ideas, una sola regla: el mundo solo «existe» cerca del jugador.
+    1. El mapa se carga por bloques (los cercanos sí, los lejanos no).
+    2. El nivel de detalle depende de la distancia.
+    3. Los personajes cercanos buscan su camino con A*.
+
+  Teclas: 1, 2, 3 y 4 cambian de modo · flechas o WASD mueven al jugador ·
+  Enter vuelve al recorrido automático · espacio pausa.
+  Modos por dirección: mundo.html#bloques, #detalle, #camino o #todo.
+  Código: MIT · Laboratorio Ayemi
+-->
+<style>
+  :root {
+    --lienzo: #0E1217;
+    --superficie: #1A1D21;
+    --borde: #24282E;
+    --borde-fuerte: #333941;
+    --gris-500: #4A515B;
+    --gris-300: #949CA8;
+    --gris-200: #BFC6D0;
+    --texto: #E2E8F0;
+    --acento: #0BC5EA;
+    --cian-300: #4DD8F2;
+    --cian-700: #0A7F98;
+    --azul-700: #2637A8;
+    --azul-900: #1A2570;
+    --verde-900: #0D5443;
+    --verde-500: #22C79B;
+    --ambar: #F5A524;
+  }
+  html, body { margin: 0; height: 100%; background: var(--lienzo); overflow: hidden; }
+  canvas { display: block; width: 100%; height: 100%; }
+</style>
+</head>
+<body>
+<canvas id="lienzo" aria-label="Mapa de un mundo abierto en miniatura, visto desde arriba"></canvas>
+<script>
+// ---------- Colores (salen de :root) ----------
+const css = getComputedStyle(document.documentElement);
+const color = nombre => css.getPropertyValue('--' + nombre).trim();
+const COL = {};
+['lienzo', 'superficie', 'borde', 'borde-fuerte', 'gris-500', 'gris-300',
+ 'gris-200', 'texto', 'acento', 'cian-300', 'cian-700', 'azul-700',
+ 'azul-900', 'verde-900', 'verde-500', 'ambar']
+  .forEach(n => { COL[n] = color(n); });
+
+// ---------- El mundo ----------
+const TAM = 48;          // casillas por lado
+const BLOQUE = 6;        // casillas por lado de cada bloque
+const NB = TAM / BLOQUE; // bloques por lado: 8 × 8 = 64
+const RADIO_DETALLE = 1; // con detalle
+const RADIO_CARGA = 2;   // cargados
+
+const PASTO = 0, CALLE = 1, EDIFICIO = 2, AGUA = 3, ARBOL = 4;
+
+// Azar con semilla fija: el mundo sale igual cada vez.
+function azar(a, b, c) {
+  let h = Math.imul(a, 374761393) ^ Math.imul(b, 668265263) ^ Math.imul(c, 2147483647);
+  h = Math.imul(h ^ (h >>> 13), 1274126177);
+  h ^= h >>> 16;
+  return (h >>> 0) / 4294967296;
+}
+
+const mapa = new Uint8Array(TAM * TAM);
+for (let y = 0; y < TAM; y++) {
+  for (let x = 0; x < TAM; x++) {
+    const lx = ((x - 4) % 8 + 8) % 8;
+    const ly = ((y - 4) % 8 + 8) % 8;
+    let t = PASTO;
+    if (lx === 0 || ly === 0) {
+      t = CALLE;
+    } else if ([2, 3, 5, 6].includes(lx) && [2, 3, 5, 6].includes(ly)) {
+      const loteX = Math.floor((x - 4) / 8) * 2 + (lx >= 4 ? 1 : 0);
+      const loteY = Math.floor((y - 4) / 8) * 2 + (ly >= 4 ? 1 : 0);
+      if (azar(loteX, loteY, 7) < 0.65) t = EDIFICIO;
+    }
+    if (t === PASTO && azar(x, y, 3) < 0.12) t = ARBOL;
+    const dx = x - 36.5, dy = y - 9.5;
+    if (dx * dx + dy * dy < 30) t = AGUA;   // un lago que corta una calle
+    mapa[y * TAM + x] = t;
+  }
+}
+const transitable = i => mapa[i] !== EDIFICIO && mapa[i] !== AGUA;
+
+// ---------- El jugador ----------
+const RUTA = [[12, 12], [28, 12], [28, 28], [12, 28]]; // por calles
+const VELOCIDAD = 3; // casillas por segundo
+const jugador = { x: 12, y: 12, tramo: 0, avance: 0 };
+let automatico = true;
+let pausa = false;
+
+function moverAutomatico(dt) {
+  const [ax, ay] = RUTA[jugador.tramo];
+  const [bx, by] = RUTA[(jugador.tramo + 1) % RUTA.length];
+  const largo = Math.abs(bx - ax) + Math.abs(by - ay);
+  jugador.avance += (VELOCIDAD * dt) / largo;
+  if (jugador.avance >= 1) {
+    jugador.avance -= 1;
+    jugador.tramo = (jugador.tramo + 1) % RUTA.length;
+    return moverAutomatico(0);
+  }
+  jugador.x = ax + (bx - ax) * jugador.avance;
+  jugador.y = ay + (by - ay) * jugador.avance;
+}
+
+const casillaJugador = () => [Math.round(jugador.x), Math.round(jugador.y)];
+const bloqueJugador = () => {
+  const [x, y] = casillaJugador();
+  return [Math.floor(x / BLOQUE), Math.floor(y / BLOQUE)];
+};
+
+// Distancia en bloques: cuántos bloques hay entre este y el del jugador.
+function distanciaEnBloques(bx, by) {
+  const [jx, jy] = bloqueJugador();
+  return Math.max(Math.abs(bx - jx),
+                  Math.abs(by - jy));
+}
+
+// ---------- A*: buscar el camino más corto ----------
+function buscarCamino(origen, meta) {
+  const g = new Float64Array(TAM * TAM).fill(Infinity);
+  const desde = new Int32Array(TAM * TAM).fill(-1);
+  const revisada = new Uint8Array(TAM * TAM);
+  const mx = meta % TAM, my = Math.floor(meta / TAM);
+  // Lo que falta, estimado: pasos en línea recta por la cuadrícula.
+  const estimar = i =>
+    Math.abs(i % TAM - mx) + Math.abs(Math.floor(i / TAM) - my);
+  const abiertas = [origen];
+  g[origen] = 0;
+  let revisadas = 0;
+  while (abiertas.length) {
+    // Elige la casilla abierta con la f más baja.
+    let mejor = 0, mejorF = Infinity;
+    for (let k = 0; k < abiertas.length; k++) {
+      const i = abiertas[k];
+      // A*: f = lo recorrido + lo que falta
+      const f = g[i] + estimar(i);
+      if (f < mejorF) { mejorF = f; mejor = k; }
+    }
+    const actual = abiertas[mejor];
+    abiertas[mejor] = abiertas[abiertas.length - 1];
+    abiertas.pop();
+    if (revisada[actual]) continue;
+    revisada[actual] = 1;
+    revisadas++;
+    if (actual === meta) {
+      const camino = [];
+      for (let i = meta; i !== -1; i = desde[i]) camino.unshift(i);
+      return { camino, revisadas, revisada };
+    }
+    const x = actual % TAM, y = Math.floor(actual / TAM);
+    for (const [vx, vy] of [[x + 1, y], [x - 1, y], [x, y + 1], [x, y - 1]]) {
+      if (vx < 0 || vy < 0 || vx >= TAM || vy >= TAM) continue;
+      const v = vy * TAM + vx;
+      if (!transitable(v) || revisada[v]) continue;
+      if (g[actual] + 1 < g[v]) {
+        g[v] = g[actual] + 1;
+        desde[v] = actual;
+        abiertas.push(v);
+      }
+    }
+  }
+  return { camino: [], revisadas, revisada };
+}
+
+// ---------- Personajes ----------
+const SALIDAS = [[9, 20], [20, 31], [30, 20], [20, 8], [44, 44], [20, 20]];
+const personajes = SALIDAS.map(([x, y]) => ({ x, y, sx: x, sy: y, camino: [], revisada: null }));
+let ultimasRevisadas = 0;
+let buscando = 0;
+
+function pensarPersonajes() {
+  const [jx, jy] = casillaJugador();
+  const meta = jy * TAM + jx;
+  ultimasRevisadas = 0;
+  buscando = 0;
+  for (const p of personajes) {
+    const d = distanciaEnBloques(Math.floor(p.x / BLOQUE), Math.floor(p.y / BLOQUE));
+    p.camino = [];
+    p.revisada = null;
+    if (d > RADIO_DETALLE) continue; // lejos: no gasta en pensar
+    const r = buscarCamino(p.y * TAM + p.x, meta);
+    buscando++;
+    ultimasRevisadas += r.revisadas;
+    p.camino = r.camino;
+    p.revisada = r.revisada;
+    if (r.camino.length <= 2) { // llegó: vuelve a su salida
+      p.x = p.sx; p.y = p.sy;
+      p.camino = []; p.revisada = null;
+    } else {
+      p.x = r.camino[1] % TAM;
+      p.y = Math.floor(r.camino[1] / TAM);
+    }
+  }
+}
+
+// ---------- Modos ----------
+const MODOS = {
+  bloques: '1 · El mapa se carga por bloques',
+  detalle: '2 · Detalle según la distancia',
+  camino: '3 · Cada personaje busca su camino',
+  todo: 'Mundo abierto en miniatura',
+};
+let modo = 'todo';
+function leerModo() {
+  const m = location.hash.replace('#', '');
+  modo = MODOS[m] ? m : 'todo';
+}
+window.addEventListener('hashchange', leerModo);
+leerModo();
+
+window.addEventListener('keydown', e => {
+  const teclasModo = { 1: 'bloques', 2: 'detalle', 3: 'camino', 4: 'todo' };
+  if (teclasModo[e.key]) { location.hash = teclasModo[e.key]; return; }
+  if (e.key === ' ') { pausa = !pausa; e.preventDefault(); return; }
+  if (e.key === 'Enter') { automatico = true; return; }
+  const pasos = {
+    ArrowUp: [0, -1], ArrowDown: [0, 1], ArrowLeft: [-1, 0], ArrowRight: [1, 0],
+    w: [0, -1], s: [0, 1], a: [-1, 0], d: [1, 0],
+  };
+  const paso = pasos[e.key];
+  if (!paso) return;
+  e.preventDefault();
+  automatico = false;
+  const [x, y] = casillaJugador();
+  const nx = x + paso[0], ny = y + paso[1];
+  if (nx < 0 || ny < 0 || nx >= TAM || ny >= TAM) return;
+  if (!transitable(ny * TAM + nx)) return;
+  jugador.x = nx; jugador.y = ny;
+});
+
+// ---------- Dibujo ----------
+const lienzo = document.getElementById('lienzo');
+const ctx = lienzo.getContext('2d');
+const ENCABEZADO = 112;
+let escala = 1, origenX = 0, origenY = 0, casilla = 1;
+
+function ajustar() {
+  const dpr = window.devicePixelRatio || 1;
+  lienzo.width = innerWidth * dpr;
+  lienzo.height = innerHeight * dpr;
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  const lado = Math.min(innerWidth - 32, innerHeight - ENCABEZADO - 16);
+  casilla = Math.floor(lado / TAM);
+  const total = casilla * TAM;
+  origenX = Math.floor((innerWidth - total) / 2);
+  origenY = ENCABEZADO + Math.floor((innerHeight - ENCABEZADO - total) / 2);
+}
+window.addEventListener('resize', ajustar);
+ajustar();
+
+function dibujarCasilla(x, y, conDetalle) {
+  const t = mapa[y * TAM + x];
+  const px = origenX + x * casilla, py = origenY + y * casilla;
+  const fondo = {
+    [PASTO]: COL['verde-900'], [ARBOL]: COL['verde-900'],
+    [CALLE]: COL['borde-fuerte'],
+    [EDIFICIO]: conDetalle ? COL['gris-500'] : COL['borde-fuerte'],
+    [AGUA]: conDetalle ? COL['azul-700'] : COL['azul-900'],
+  }[t];
+  ctx.fillStyle = fondo;
+  ctx.fillRect(px, py, casilla, casilla);
+  if (!conDetalle) return; // lejos: color plano
+  if (t === EDIFICIO) dibujarVentanas(px, py);
+  if (t === ARBOL) {
+    ctx.fillStyle = COL['verde-500'];
+    ctx.beginPath();
+    ctx.arc(px + casilla / 2, py + casilla / 2, casilla * 0.38, 0, Math.PI * 2);
+    ctx.fill();
+  }
+}
+
+function dibujarVentanas(px, py) {
+  const v = Math.max(2, Math.floor(casilla / 5));
+  ctx.fillStyle = COL['gris-200'];
+  for (const [fx, fy] of [[0.25, 0.25], [0.6, 0.25], [0.25, 0.6], [0.6, 0.6]]) {
+    ctx.fillRect(px + casilla * fx, py + casilla * fy, v, v);
+  }
+}
+
+function marco(bx0, by0, bx1, by1, trazo, ancho) {
+  const x0 = Math.max(0, bx0), y0 = Math.max(0, by0);
+  const x1 = Math.min(NB - 1, bx1), y1 = Math.min(NB - 1, by1);
+  ctx.strokeStyle = trazo;
+  ctx.lineWidth = ancho;
+  ctx.strokeRect(origenX + x0 * BLOQUE * casilla, origenY + y0 * BLOQUE * casilla,
+                 (x1 - x0 + 1) * BLOQUE * casilla, (y1 - y0 + 1) * BLOQUE * casilla);
+}
+
+function centro(i) {
+  return [origenX + (i % TAM + 0.5) * casilla,
+          origenY + (Math.floor(i / TAM) + 0.5) * casilla];
+}
+
+function dibujar() {
+  ctx.fillStyle = COL.lienzo;
+  ctx.fillRect(0, 0, innerWidth, innerHeight);
+  const total = casilla * TAM;
+
+  // Fondo del mundo sin cargar: solo la cuadrícula de bloques.
+  ctx.fillStyle = COL.superficie;
+  ctx.fillRect(origenX, origenY, total, total);
+
+  let cargados = 0, conDetalleTotal = 0;
+  for (let by = 0; by < NB; by++) {
+    for (let bx = 0; bx < NB; bx++) {
+      const d = distanciaEnBloques(bx, by);
+      if (d > RADIO_CARGA) continue; // no existe
+      const conDetalle = d <= RADIO_DETALLE;
+      cargados++;
+      if (conDetalle) conDetalleTotal++;
+      for (let y = by * BLOQUE; y < (by + 1) * BLOQUE; y++)
+        for (let x = bx * BLOQUE; x < (bx + 1) * BLOQUE; x++)
+          dibujarCasilla(x, y, conDetalle);
+    }
+  }
+
+  // Cuadrícula de bloques.
+  ctx.strokeStyle = COL.borde;
+  ctx.lineWidth = 1;
+  for (let k = 0; k <= NB; k++) {
+    const p = k * BLOQUE * casilla;
+    ctx.beginPath(); ctx.moveTo(origenX + p, origenY); ctx.lineTo(origenX + p, origenY + total); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(origenX, origenY + p); ctx.lineTo(origenX + total, origenY + p); ctx.stroke();
+  }
+
+  // Zonas: cargada (cian oscuro) y con detalle (cian).
+  const [jbx, jby] = bloqueJugador();
+  if (modo !== 'camino') {
+    marco(jbx - RADIO_CARGA, jby - RADIO_CARGA, jbx + RADIO_CARGA, jby + RADIO_CARGA, COL['cian-700'], 2);
+    marco(jbx - RADIO_DETALLE, jby - RADIO_DETALLE, jbx + RADIO_DETALLE, jby + RADIO_DETALLE, COL.acento, 3);
+  }
+
+  // Casillas que revisó A* y caminos encontrados.
+  if (modo === 'camino' || modo === 'todo') {
+    if (modo === 'camino') {
+      ctx.globalAlpha = 0.35;
+      ctx.fillStyle = COL['cian-700'];
+      for (const p of personajes) {
+        if (!p.revisada) continue;
+        for (let i = 0; i < p.revisada.length; i++) {
+          if (p.revisada[i]) ctx.fillRect(origenX + (i % TAM) * casilla,
+            origenY + Math.floor(i / TAM) * casilla, casilla, casilla);
+        }
+      }
+      ctx.globalAlpha = 1;
+    }
+    ctx.strokeStyle = COL['cian-300'];
+    ctx.lineWidth = Math.max(2, casilla / 4);
+    for (const p of personajes) {
+      if (p.camino.length < 2) continue;
+      ctx.beginPath();
+      p.camino.forEach((i, k) => {
+        const [cx, cy] = centro(i);
+        if (k === 0) ctx.moveTo(cx, cy); else ctx.lineTo(cx, cy);
+      });
+      ctx.stroke();
+    }
+  }
+
+  // Personajes: ámbar si piensan, gris si están cargados pero lejos.
+  for (const p of personajes) {
+    const d = distanciaEnBloques(Math.floor(p.x / BLOQUE), Math.floor(p.y / BLOQUE));
+    if (d > RADIO_CARGA) continue;
+    ctx.fillStyle = d <= RADIO_DETALLE ? COL.ambar : COL['gris-300'];
+    const [cx, cy] = centro(p.y * TAM + p.x);
+    ctx.beginPath();
+    ctx.arc(cx, cy, casilla * 0.45, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  // Jugador.
+  const jx = origenX + (jugador.x + 0.5) * casilla;
+  const jy = origenY + (jugador.y + 0.5) * casilla;
+  ctx.fillStyle = COL.acento;
+  ctx.beginPath();
+  ctx.arc(jx, jy, casilla * 0.6, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.strokeStyle = COL.texto;
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  // Encabezado.
+  ctx.textBaseline = 'top';
+  ctx.fillStyle = COL.texto;
+  ctx.font = '700 25px "Plus Jakarta Sans", "Segoe UI", sans-serif';
+  ctx.fillText(MODOS[modo], origenX, 16);
+  ctx.font = '400 20px "JetBrains Mono", Consolas, monospace';
+  ctx.fillStyle = COL['gris-200'];
+  let linea;
+  if (modo === 'camino') {
+    linea = `personajes buscando: ${buscando} · revisadas: ${ultimasRevisadas}`;
+  } else if (modo === 'detalle') {
+    linea = `con detalle: ${conDetalleTotal} · sin detalle: ${cargados - conDetalleTotal}`;
+  } else {
+    linea = `bloques cargados: ${cargados} de ${NB * NB}`;
+  }
+  ctx.fillText(linea, origenX, 52);
+  ctx.font = '400 14px "JetBrains Mono", Consolas, monospace';
+  ctx.fillStyle = COL['gris-300'];
+  ctx.fillText('1 2 3 4: modos · flechas: mover · espacio: pausa', origenX, 84);
+}
+
+// ---------- Bucle ----------
+let antes = performance.now();
+let reloj = 0;
+const PENSAR_CADA = 0.2; // segundos
+function cuadro(ahora) {
+  const dt = Math.min(0.1, (ahora - antes) / 1000);
+  antes = ahora;
+  if (!pausa) {
+    if (automatico) moverAutomatico(dt);
+    reloj += dt;
+    if (reloj >= PENSAR_CADA) { reloj = 0; pensarPersonajes(); }
+  }
+  dibujar();
+  requestAnimationFrame(cuadro);
+}
+pensarPersonajes();
+requestAnimationFrame(cuadro);
+</script>
+</body>
+</html>
