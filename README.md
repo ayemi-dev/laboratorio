@@ -11,6 +11,7 @@ Código y guías de los videos cortos del **Laboratorio Ayemi**. Cada video plan
 | [`a13-canvas-estudiar/`](a13-canvas-estudiar/) | Canvas de Gemini para estudiar y simular tu examen | A · Gratis y oficial |
 | [`a14-colab-gratis/`](a14-colab-gratis/) | Colab gratis: lo que te da y cómo comprobarlo | A · Gratis y oficial |
 | [`a15-colab-yolo/`](a15-colab-yolo/) | YOLO en Google Colab: qué es y cómo se usa | A · Gratis y oficial |
+| [`a16-tunnel-dominio/`](a16-tunnel-dominio/) | Cloudflare Tunnel con tu propio dominio y sin abrir puertos | A · Gratis y oficial |
 | [`c1-idea-requisitos/`](c1-idea-requisitos/) | De la idea a los requisitos con IA | C · Web moderna |
 | [`c2-requisitos-maqueta/`](c2-requisitos-maqueta/) | De los requisitos a la maqueta con IA | C · Web moderna |
 | [`c3-react-vite-tailwind/`](c3-react-vite-tailwind/) | De la maqueta a React, Vite y Tailwind en 1 minuto | C · Web moderna |
@@ -45,6 +46,7 @@ Código y guías de los videos cortos del **Laboratorio Ayemi**. Cada video plan
 | [`g8-conflictos-merge/`](g8-conflictos-merge/) | El conflicto, resuelto: de los marcadores al pull request unido | G · Herramientas de desarrollador |
 | [`g9-terminal-scripts/`](g9-terminal-scripts/) | La terminal, nivel 2: tuberías, redirecciones y tu primer script | G · Herramientas de desarrollador |
 | [`g11-mundo-abierto/`](g11-mundo-abierto/) | ¿Cómo se programa un mundo abierto? Una demo con bloques, detalle y A* | G · Herramientas de desarrollador |
+| [`g14-github-actions/`](g14-github-actions/) | Tu primer GitHub Actions: que GitHub corra tus pruebas solo en cada push | G · Herramientas de desarrollador |
 | [`h1-stack-node/`](h1-stack-node/) | Qué es un stack: el stack de Node.js | H · Desarrollo web |
 | [`h2-react/`](h2-react/) | Qué es React: componentes, JSX, props y estado en 1 minuto | H · Desarrollo web |
 | [`h3-sqlite/`](h3-sqlite/) | SQLite: la base de datos que es un solo archivo. Crear, insertar y consultar con Node | H · Desarrollo web |
