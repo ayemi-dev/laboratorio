@@ -34,6 +34,7 @@ Código y guías de los videos cortos del **Laboratorio Ayemi**. Cada video plan
 | [`f5-kicad-primera-placa/`](f5-kicad-primera-placa/) | De protoboard a placa con KiCad | F · Microcontroladores |
 | [`f6-wokwi-vscode/`](f6-wokwi-vscode/) | El mismo LED, compilado en tu compu y listo para simular en VS Code (PlatformIO + Wokwi) | F · Microcontroladores |
 | [`f7-oled-animacion/`](f7-oled-animacion/) | Una animación en una OLED de 0.96" con un ESP32 | F · Microcontroladores |
+| [`f9-stm32-adc/`](f9-stm32-adc/) | STM32 simulado: lee un potenciómetro con el ADC y míralo en el monitor serie | F · Microcontroladores |
 | [`g1-vscode/`](g1-vscode/) | VS Code: gratis, de código abierto y tres atajos | G · Herramientas de desarrollador |
 | [`g2-git-github/`](g2-git-github/) | Git y GitHub: qué hace cada comando | G · Herramientas de desarrollador |
 | [`g3-ramas-pull-request/`](g3-ramas-pull-request/) | Ramas, merge y pull requests: prueba ideas sin romper tu proyecto | G · Herramientas de desarrollador |
@@ -45,11 +46,13 @@ Código y guías de los videos cortos del **Laboratorio Ayemi**. Cada video plan
 | [`g7-git-deshacer/`](g7-git-deshacer/) | Deshacer sin miedo en Git: restore, revert y reset | G · Herramientas de desarrollador |
 | [`g8-conflictos-merge/`](g8-conflictos-merge/) | El conflicto, resuelto: de los marcadores al pull request unido | G · Herramientas de desarrollador |
 | [`g9-terminal-scripts/`](g9-terminal-scripts/) | La terminal, nivel 2: tuberías, redirecciones y tu primer script | G · Herramientas de desarrollador |
+| [`g12-terminal-atajos/`](g12-terminal-atajos/) | La terminal, nivel 3: alias, historial y atajos que te ahorran horas | G · Herramientas de desarrollador |
 | [`g11-mundo-abierto/`](g11-mundo-abierto/) | ¿Cómo se programa un mundo abierto? Una demo con bloques, detalle y A* | G · Herramientas de desarrollador |
 | [`g14-github-actions/`](g14-github-actions/) | Tu primer GitHub Actions: que GitHub corra tus pruebas solo en cada push | G · Herramientas de desarrollador |
 | [`h1-stack-node/`](h1-stack-node/) | Qué es un stack: el stack de Node.js | H · Desarrollo web |
 | [`h2-react/`](h2-react/) | Qué es React: componentes, JSX, props y estado en 1 minuto | H · Desarrollo web |
 | [`h3-sqlite/`](h3-sqlite/) | SQLite: la base de datos que es un solo archivo. Crear, insertar y consultar con Node | H · Desarrollo web |
+| [`h4-sqlite-join-indices/`](h4-sqlite-join-indices/) | SQLite nivel 2: une tablas con JOIN y hazlo rápido con un índice | H · Desarrollo web |
 | [`h5-react-fetch/`](h5-react-fetch/) | React nivel 2: trae datos de una API con useEffect | H · Desarrollo web |
 | [`p1-pedidos-en-whatsapp/`](p1-pedidos-en-whatsapp/) | Pedidos por WhatsApp sin libreta: catálogo, tablero y resumen del día (maqueta) | P · Casos |
 | [`p2-citas-por-whatsapp/`](p2-citas-por-whatsapp/) | Citas por WhatsApp que se cruzan: agenda en línea, confirmación y recordatorio (maqueta) | P · Casos |
