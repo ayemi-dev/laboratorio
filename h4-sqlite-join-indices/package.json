@@ -1,0 +1,8 @@
+{
+  "name": "h4-sqlite-join-indices",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "node --disable-warning=ExperimentalWarning proyectos.js"
+  }
+}
