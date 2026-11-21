@@ -10,6 +10,7 @@ Código y guías de los videos cortos del **Laboratorio Ayemi**. Cada video plan
 | [`a11-cloudflare-tunnel/`](a11-cloudflare-tunnel/) | Cloudflare Tunnel: tu proyecto en internet sin abrir puertos | A · Gratis y oficial |
 | [`a13-canvas-estudiar/`](a13-canvas-estudiar/) | Canvas de Gemini para estudiar y simular tu examen | A · Gratis y oficial |
 | [`a14-colab-gratis/`](a14-colab-gratis/) | Colab gratis: lo que te da y cómo comprobarlo | A · Gratis y oficial |
+| [`a15-colab-yolo/`](a15-colab-yolo/) | YOLO en Google Colab: qué es y cómo se usa | A · Gratis y oficial |
 | [`c1-idea-requisitos/`](c1-idea-requisitos/) | De la idea a los requisitos con IA | C · Web moderna |
 | [`c2-requisitos-maqueta/`](c2-requisitos-maqueta/) | De los requisitos a la maqueta con IA | C · Web moderna |
 | [`c3-react-vite-tailwind/`](c3-react-vite-tailwind/) | De la maqueta a React, Vite y Tailwind en 1 minuto | C · Web moderna |
