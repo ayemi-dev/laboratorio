@@ -1,0 +1,13 @@
+{
+  "name": "visitas",
+  "version": "1.0.0",
+  "private": true,
+  "description": "App mínima del Laboratorio Ayemi: Node.js y Postgres con Docker Compose",
+  "main": "servidor.js",
+  "scripts": {
+    "start": "node servidor.js"
+  },
+  "dependencies": {
+    "pg": "^8.23.1"
+  }
+}

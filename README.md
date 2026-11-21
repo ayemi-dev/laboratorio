@@ -34,6 +34,7 @@ Código y guías de los videos cortos del **Laboratorio Ayemi**. Cada video plan
 | [`f5-kicad-primera-placa/`](f5-kicad-primera-placa/) | De protoboard a placa con KiCad | F · Microcontroladores |
 | [`f6-wokwi-vscode/`](f6-wokwi-vscode/) | El mismo LED, compilado en tu compu y listo para simular en VS Code (PlatformIO + Wokwi) | F · Microcontroladores |
 | [`f7-oled-animacion/`](f7-oled-animacion/) | Una animación en una OLED de 0.96" con un ESP32 | F · Microcontroladores |
+| [`f8-pico-sensor/`](f8-pico-sensor/) | Una Raspberry Pi Pico simulada lee temperatura y humedad con un DHT22 | F · Microcontroladores |
 | [`f9-stm32-adc/`](f9-stm32-adc/) | STM32 simulado: lee un potenciómetro con el ADC y míralo en el monitor serie | F · Microcontroladores |
 | [`g1-vscode/`](g1-vscode/) | VS Code: gratis, de código abierto y tres atajos | G · Herramientas de desarrollador |
 | [`g2-git-github/`](g2-git-github/) | Git y GitHub: qué hace cada comando | G · Herramientas de desarrollador |
@@ -48,6 +49,7 @@ Código y guías de los videos cortos del **Laboratorio Ayemi**. Cada video plan
 | [`g9-terminal-scripts/`](g9-terminal-scripts/) | La terminal, nivel 2: tuberías, redirecciones y tu primer script | G · Herramientas de desarrollador |
 | [`g12-terminal-atajos/`](g12-terminal-atajos/) | La terminal, nivel 3: alias, historial y atajos que te ahorran horas | G · Herramientas de desarrollador |
 | [`g11-mundo-abierto/`](g11-mundo-abierto/) | ¿Cómo se programa un mundo abierto? Una demo con bloques, detalle y A* | G · Herramientas de desarrollador |
+| [`g13-git-stash/`](g13-git-stash/) | git stash: guarda tu trabajo a medias sin hacer commit | G · Herramientas de desarrollador |
 | [`g14-github-actions/`](g14-github-actions/) | Tu primer GitHub Actions: que GitHub corra tus pruebas solo en cada push | G · Herramientas de desarrollador |
 | [`g15-docker-compose/`](g15-docker-compose/) | Docker Compose: tu app y su base de datos con un solo comando | G · Herramientas de desarrollador |
 | [`h1-stack-node/`](h1-stack-node/) | Qué es un stack: el stack de Node.js | H · Desarrollo web |

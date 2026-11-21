@@ -1,0 +1,25 @@
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      PGHOST: db
+      PGUSER: postgres
+      PGPASSWORD: practica
+      PGDATABASE: postgres
+    depends_on:
+      db:
+        condition: service_healthy
+  db:
+    image: postgres:18-alpine
+    environment:
+      POSTGRES_PASSWORD: practica
+    volumes:
+      - datos:/var/lib/postgresql
+    healthcheck:
+      test: pg_isready -U postgres
+      interval: 2s
+      retries: 10
+volumes:
+  datos:
