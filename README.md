@@ -52,6 +52,7 @@ Código y guías de los videos cortos del **Laboratorio Ayemi**. Cada video plan
 | [`g13-git-stash/`](g13-git-stash/) | git stash: guarda tu trabajo a medias sin hacer commit | G · Herramientas de desarrollador |
 | [`g14-github-actions/`](g14-github-actions/) | Tu primer GitHub Actions: que GitHub corra tus pruebas solo en cada push | G · Herramientas de desarrollador |
 | [`g15-docker-compose/`](g15-docker-compose/) | Docker Compose: tu app y su base de datos con un solo comando | G · Herramientas de desarrollador |
+| [`g16-terminal-tuberias/`](g16-terminal-tuberias/) | La terminal, nivel 4: tuberías, grep y redirecciones | G · Herramientas de desarrollador |
 | [`h1-stack-node/`](h1-stack-node/) | Qué es un stack: el stack de Node.js | H · Desarrollo web |
 | [`h2-react/`](h2-react/) | Qué es React: componentes, JSX, props y estado en 1 minuto | H · Desarrollo web |
 | [`h3-sqlite/`](h3-sqlite/) | SQLite: la base de datos que es un solo archivo. Crear, insertar y consultar con Node | H · Desarrollo web |
