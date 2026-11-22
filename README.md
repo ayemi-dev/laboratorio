@@ -66,6 +66,7 @@ Código y guías de los videos cortos del **Laboratorio Ayemi**. Cada video plan
 | [`h4-sqlite-join-indices/`](h4-sqlite-join-indices/) | SQLite nivel 2: une tablas con JOIN y hazlo rápido con un índice | H · Desarrollo web |
 | [`h5-react-fetch/`](h5-react-fetch/) | React nivel 2: trae datos de una API con useEffect | H · Desarrollo web |
 | [`h6-react-formularios/`](h6-react-formularios/) | React nivel 3: formularios con estado y validación | H · Desarrollo web |
+| [`h7-api-node-sqlite/`](h7-api-node-sqlite/) | Tu primera API: Node y SQLite con GET y POST | H · Desarrollo web |
 | [`p1-pedidos-en-whatsapp/`](p1-pedidos-en-whatsapp/) | Pedidos por WhatsApp sin libreta: catálogo, tablero y resumen del día (maqueta) | P · Casos |
 | [`p2-citas-por-whatsapp/`](p2-citas-por-whatsapp/) | Citas por WhatsApp que se cruzan: agenda en línea, confirmación y recordatorio (maqueta) | P · Casos |
 | [`p3-inventario-tienda/`](p3-inventario-tienda/) | El inventario de tu tienda nunca cuadra: entradas y salidas, existencia al día y alerta de mínimo (maqueta) | P · Casos |
