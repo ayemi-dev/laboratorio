@@ -53,6 +53,9 @@ Código y guías de los videos cortos del **Laboratorio Ayemi**. Cada video plan
 | [`g14-github-actions/`](g14-github-actions/) | Tu primer GitHub Actions: que GitHub corra tus pruebas solo en cada push | G · Herramientas de desarrollador |
 | [`g15-docker-compose/`](g15-docker-compose/) | Docker Compose: tu app y su base de datos con un solo comando | G · Herramientas de desarrollador |
 | [`g16-terminal-tuberias/`](g16-terminal-tuberias/) | La terminal, nivel 4: tuberías, grep y redirecciones | G · Herramientas de desarrollador |
+| [`g18-terminal-variables/`](g18-terminal-variables/) | La terminal, nivel 5: variables de entorno y el PATH | G · Herramientas de desarrollador |
+| [`g17-git-rebase/`](g17-git-rebase/) | Git nivel 5: rebase o merge, cuándo usar cada uno | G · Herramientas de desarrollador |
+| [`g22-git-log-blame/`](g22-git-log-blame/) | Git: quién cambió esta línea y por qué | G · Herramientas de desarrollador |
 | [`h1-stack-node/`](h1-stack-node/) | Qué es un stack: el stack de Node.js | H · Desarrollo web |
 | [`h2-react/`](h2-react/) | Qué es React: componentes, JSX, props y estado en 1 minuto | H · Desarrollo web |
 | [`h3-sqlite/`](h3-sqlite/) | SQLite: la base de datos que es un solo archivo. Crear, insertar y consultar con Node | H · Desarrollo web |
