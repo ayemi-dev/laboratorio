@@ -1,0 +1,14 @@
+# Plantilla de .gitignore para claves y secretos (Laboratorio Ayemi, G23)
+# Cópiala a la raíz de tu proyecto ANTES del primer commit.
+# Si un archivo ya está en un commit, esto no lo saca: usa git rm --cached <archivo>.
+
+# Archivos de variables con claves
+.env
+.env.*
+
+# El de ejemplo sí se sube (sin claves reales, solo los nombres)
+!.env.example
+
+# Llaves y certificados
+*.pem
+*.key
