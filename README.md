@@ -51,6 +51,7 @@ Código y guías de los videos cortos del **Laboratorio Ayemi**. Cada video plan
 | [`g11-mundo-abierto/`](g11-mundo-abierto/) | ¿Cómo se programa un mundo abierto? Una demo con bloques, detalle y A* | G · Herramientas de desarrollador |
 | [`g13-git-stash/`](g13-git-stash/) | git stash: guarda tu trabajo a medias sin hacer commit | G · Herramientas de desarrollador |
 | [`g14-github-actions/`](g14-github-actions/) | Tu primer GitHub Actions: que GitHub corra tus pruebas solo en cada push | G · Herramientas de desarrollador |
+| [`g21-actions-pruebas/`](g21-actions-pruebas/) | GitHub Actions nivel 2: pruebas automáticas en cada pull request | G · Herramientas de desarrollador |
 | [`g15-docker-compose/`](g15-docker-compose/) | Docker Compose: tu app y su base de datos con un solo comando | G · Herramientas de desarrollador |
 | [`g16-terminal-tuberias/`](g16-terminal-tuberias/) | La terminal, nivel 4: tuberías, grep y redirecciones | G · Herramientas de desarrollador |
 | [`g18-terminal-variables/`](g18-terminal-variables/) | La terminal, nivel 5: variables de entorno y el PATH | G · Herramientas de desarrollador |

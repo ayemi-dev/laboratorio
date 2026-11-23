@@ -1,0 +1,12 @@
+{
+  "required_status_checks": {
+    "strict": false,
+    "checks": [
+      { "context": "pruebas (24.x)" },
+      { "context": "pruebas (26.x)" }
+    ]
+  },
+  "enforce_admins": true,
+  "required_pull_request_reviews": null,
+  "restrictions": null
+}
