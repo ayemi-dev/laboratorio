@@ -36,6 +36,7 @@ Código y guías de los videos cortos del **Laboratorio Ayemi**. Cada video plan
 | [`f7-oled-animacion/`](f7-oled-animacion/) | Una animación en una OLED de 0.96" con un ESP32 | F · Microcontroladores |
 | [`f8-pico-sensor/`](f8-pico-sensor/) | Una Raspberry Pi Pico simulada lee temperatura y humedad con un DHT22 | F · Microcontroladores |
 | [`f9-stm32-adc/`](f9-stm32-adc/) | STM32 simulado: lee un potenciómetro con el ADC y míralo en el monitor serie | F · Microcontroladores |
+| [`f10-esp32-wifi-mqtt/`](f10-esp32-wifi-mqtt/) | Tu ESP32 manda datos a internet por MQTT | F · Microcontroladores |
 | [`g1-vscode/`](g1-vscode/) | VS Code: gratis, de código abierto y tres atajos | G · Herramientas de desarrollador |
 | [`g2-git-github/`](g2-git-github/) | Git y GitHub: qué hace cada comando | G · Herramientas de desarrollador |
 | [`g3-ramas-pull-request/`](g3-ramas-pull-request/) | Ramas, merge y pull requests: prueba ideas sin romper tu proyecto | G · Herramientas de desarrollador |
@@ -62,6 +63,7 @@ Código y guías de los videos cortos del **Laboratorio Ayemi**. Cada video plan
 | [`g23-gitignore-secretos/`](g23-gitignore-secretos/) | Que tus claves no lleguen a GitHub: .gitignore y gitleaks | G · Herramientas de desarrollador |
 | [`g24-no-fue-la-ia/`](g24-no-fue-la-ia/) | ¿Fue la IA? No: fue un archivo | G · Herramientas de desarrollador |
 | [`g25-terminal-procesos/`](g25-terminal-procesos/) | La terminal, nivel 6: procesos, ps, kill y segundo plano | G · Herramientas de desarrollador |
+| [`g26-terminal-buscar/`](g26-terminal-buscar/) | La terminal, nivel 7: encuentra cualquier cosa con find y grep | G · Herramientas de desarrollador |
 | [`h1-stack-node/`](h1-stack-node/) | Qué es un stack: el stack de Node.js | H · Desarrollo web |
 | [`h2-react/`](h2-react/) | Qué es React: componentes, JSX, props y estado en 1 minuto | H · Desarrollo web |
 | [`h3-sqlite/`](h3-sqlite/) | SQLite: la base de datos que es un solo archivo. Crear, insertar y consultar con Node | H · Desarrollo web |
@@ -69,6 +71,7 @@ Código y guías de los videos cortos del **Laboratorio Ayemi**. Cada video plan
 | [`h5-react-fetch/`](h5-react-fetch/) | React nivel 2: trae datos de una API con useEffect | H · Desarrollo web |
 | [`h6-react-formularios/`](h6-react-formularios/) | React nivel 3: formularios con estado y validación | H · Desarrollo web |
 | [`h7-api-node-sqlite/`](h7-api-node-sqlite/) | Tu primera API: Node y SQLite con GET y POST | H · Desarrollo web |
+| [`h8-react-con-tu-api/`](h8-react-con-tu-api/) | Conecta tu React a tu propia API | H · Desarrollo web |
 | [`p1-pedidos-en-whatsapp/`](p1-pedidos-en-whatsapp/) | Pedidos por WhatsApp sin libreta: catálogo, tablero y resumen del día (maqueta) | P · Casos |
 | [`p2-citas-por-whatsapp/`](p2-citas-por-whatsapp/) | Citas por WhatsApp que se cruzan: agenda en línea, confirmación y recordatorio (maqueta) | P · Casos |
 | [`p3-inventario-tienda/`](p3-inventario-tienda/) | El inventario de tu tienda nunca cuadra: entradas y salidas, existencia al día y alerta de mínimo (maqueta) | P · Casos |
