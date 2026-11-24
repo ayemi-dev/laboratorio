@@ -61,6 +61,7 @@ Código y guías de los videos cortos del **Laboratorio Ayemi**. Cada video plan
 | [`g20-dockerfile-capas/`](g20-dockerfile-capas/) | Docker nivel 3: tu propio Dockerfile, capas y caché | G · Herramientas de desarrollador |
 | [`g23-gitignore-secretos/`](g23-gitignore-secretos/) | Que tus claves no lleguen a GitHub: .gitignore y gitleaks | G · Herramientas de desarrollador |
 | [`g24-no-fue-la-ia/`](g24-no-fue-la-ia/) | ¿Fue la IA? No: fue un archivo | G · Herramientas de desarrollador |
+| [`g25-terminal-procesos/`](g25-terminal-procesos/) | La terminal, nivel 6: procesos, ps, kill y segundo plano | G · Herramientas de desarrollador |
 | [`h1-stack-node/`](h1-stack-node/) | Qué es un stack: el stack de Node.js | H · Desarrollo web |
 | [`h2-react/`](h2-react/) | Qué es React: componentes, JSX, props y estado en 1 minuto | H · Desarrollo web |
 | [`h3-sqlite/`](h3-sqlite/) | SQLite: la base de datos que es un solo archivo. Crear, insertar y consultar con Node | H · Desarrollo web |
