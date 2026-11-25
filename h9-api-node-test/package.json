@@ -1,0 +1,12 @@
+{
+  "name": "h9-api-node-test",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "node --disable-warning=ExperimentalWarning servidor.js",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "express": "^5.3.0"
+  }
+}

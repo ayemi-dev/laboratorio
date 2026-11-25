@@ -76,6 +76,7 @@ Código y guías de los videos cortos del **Laboratorio Ayemi**. Cada video plan
 | [`h6-react-formularios/`](h6-react-formularios/) | React nivel 3: formularios con estado y validación | H · Desarrollo web |
 | [`h7-api-node-sqlite/`](h7-api-node-sqlite/) | Tu primera API: Node y SQLite con GET y POST | H · Desarrollo web |
 | [`h8-react-con-tu-api/`](h8-react-con-tu-api/) | Conecta tu React a tu propia API | H · Desarrollo web |
+| [`h9-api-node-test/`](h9-api-node-test/) | Prueba tu API de Node sin instalar nada con node:test | H · Desarrollo web |
 | [`p1-pedidos-en-whatsapp/`](p1-pedidos-en-whatsapp/) | Pedidos por WhatsApp sin libreta: catálogo, tablero y resumen del día (maqueta) | P · Casos |
 | [`p2-citas-por-whatsapp/`](p2-citas-por-whatsapp/) | Citas por WhatsApp que se cruzan: agenda en línea, confirmación y recordatorio (maqueta) | P · Casos |
 | [`p3-inventario-tienda/`](p3-inventario-tienda/) | El inventario de tu tienda nunca cuadra: entradas y salidas, existencia al día y alerta de mínimo (maqueta) | P · Casos |
