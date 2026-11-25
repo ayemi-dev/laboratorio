@@ -27,6 +27,7 @@ Código y guías de los videos cortos del **Laboratorio Ayemi**. Cada video plan
 | [`e4-stl-a-gcode/`](e4-stl-a-gcode/) | Del STL al G-code: el soporte para celular, listo para imprimir con PrusaSlicer | E · Modelado 3D con código |
 | [`e5-blender/`](e5-blender/) | La misma pieza en Blender: un render presentable del soporte, gratis | E · Modelado 3D con código |
 | [`e6-emi-en-blender/`](e6-emi-en-blender/) | Emi en 3D con Blender, y te lo regalamos | E · Modelado 3D con código |
+| [`e7-blender-giro-360/`](e7-blender-giro-360/) | Un giro de 360° de tu modelo con un script de Python | E · Modelado 3D con código |
 | [`af1-wokwi-arduino/`](af1-wokwi-arduino/) | Simula un Arduino gratis en el navegador | F · Microcontroladores |
 | [`f2-wokwi-esp32/`](f2-wokwi-esp32/) | Un ESP32 simulado que consulta el clima en internet | F · Microcontroladores |
 | [`f3-stm32-wokwi/`](f3-stm32-wokwi/) | Un STM32 Blue Pill simulado: ADC de 12 bits, PWM y OLED | F · Microcontroladores |
