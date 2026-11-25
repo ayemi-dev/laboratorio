@@ -38,6 +38,7 @@ Código y guías de los videos cortos del **Laboratorio Ayemi**. Cada video plan
 | [`f8-pico-sensor/`](f8-pico-sensor/) | Una Raspberry Pi Pico simulada lee temperatura y humedad con un DHT22 | F · Microcontroladores |
 | [`f9-stm32-adc/`](f9-stm32-adc/) | STM32 simulado: lee un potenciómetro con el ADC y míralo en el monitor serie | F · Microcontroladores |
 | [`f10-esp32-wifi-mqtt/`](f10-esp32-wifi-mqtt/) | Tu ESP32 manda datos a internet por MQTT | F · Microcontroladores |
+| [`f11-mqtt-python-csv/`](f11-mqtt-python-csv/) | Recibe los datos de tu ESP32 en Python y guárdalos en un CSV | F · Microcontroladores |
 | [`g1-vscode/`](g1-vscode/) | VS Code: gratis, de código abierto y tres atajos | G · Herramientas de desarrollador |
 | [`g2-git-github/`](g2-git-github/) | Git y GitHub: qué hace cada comando | G · Herramientas de desarrollador |
 | [`g3-ramas-pull-request/`](g3-ramas-pull-request/) | Ramas, merge y pull requests: prueba ideas sin romper tu proyecto | G · Herramientas de desarrollador |
@@ -65,6 +66,8 @@ Código y guías de los videos cortos del **Laboratorio Ayemi**. Cada video plan
 | [`g24-no-fue-la-ia/`](g24-no-fue-la-ia/) | ¿Fue la IA? No: fue un archivo | G · Herramientas de desarrollador |
 | [`g25-terminal-procesos/`](g25-terminal-procesos/) | La terminal, nivel 6: procesos, ps, kill y segundo plano | G · Herramientas de desarrollador |
 | [`g26-terminal-buscar/`](g26-terminal-buscar/) | La terminal, nivel 7: encuentra cualquier cosa con find y grep | G · Herramientas de desarrollador |
+| [`g27-git-bisect/`](g27-git-bisect/) | Git: encuentra el commit que rompió todo | G · Herramientas de desarrollador |
+| [`g28-docker-volumenes/`](g28-docker-volumenes/) | Tus datos sobreviven al contenedor: volúmenes de Docker | G · Herramientas de desarrollador |
 | [`h1-stack-node/`](h1-stack-node/) | Qué es un stack: el stack de Node.js | H · Desarrollo web |
 | [`h2-react/`](h2-react/) | Qué es React: componentes, JSX, props y estado en 1 minuto | H · Desarrollo web |
 | [`h3-sqlite/`](h3-sqlite/) | SQLite: la base de datos que es un solo archivo. Crear, insertar y consultar con Node | H · Desarrollo web |
