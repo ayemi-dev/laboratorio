@@ -70,6 +70,7 @@ Código y guías de los videos cortos del **Laboratorio Ayemi**. Cada video plan
 | [`g26-terminal-buscar/`](g26-terminal-buscar/) | La terminal, nivel 7: encuentra cualquier cosa con find y grep | G · Herramientas de desarrollador |
 | [`g27-git-bisect/`](g27-git-bisect/) | Git: encuentra el commit que rompió todo | G · Herramientas de desarrollador |
 | [`g28-docker-volumenes/`](g28-docker-volumenes/) | Tus datos sobreviven al contenedor: volúmenes de Docker | G · Herramientas de desarrollador |
+| [`g29-git-reflog/`](g29-git-reflog/) | Git: recupera una rama que borraste | G · Herramientas de desarrollador |
 | [`h1-stack-node/`](h1-stack-node/) | Qué es un stack: el stack de Node.js | H · Desarrollo web |
 | [`h2-react/`](h2-react/) | Qué es React: componentes, JSX, props y estado en 1 minuto | H · Desarrollo web |
 | [`h3-sqlite/`](h3-sqlite/) | SQLite: la base de datos que es un solo archivo. Crear, insertar y consultar con Node | H · Desarrollo web |
