@@ -40,6 +40,7 @@ Código y guías de los videos cortos del **Laboratorio Ayemi**. Cada video plan
 | [`f9-stm32-adc/`](f9-stm32-adc/) | STM32 simulado: lee un potenciómetro con el ADC y míralo en el monitor serie | F · Microcontroladores |
 | [`f10-esp32-wifi-mqtt/`](f10-esp32-wifi-mqtt/) | Tu ESP32 manda datos a internet por MQTT | F · Microcontroladores |
 | [`f11-mqtt-python-csv/`](f11-mqtt-python-csv/) | Recibe los datos de tu ESP32 en Python y guárdalos en un CSV | F · Microcontroladores |
+| [`c-termometro-oled/`](c-termometro-oled/) | Un termómetro con ESP32, DHT22 y pantalla OLED, simulado en Wokwi | F · Microcontroladores |
 | [`g1-vscode/`](g1-vscode/) | VS Code: gratis, de código abierto y tres atajos | G · Herramientas de desarrollador |
 | [`g2-git-github/`](g2-git-github/) | Git y GitHub: qué hace cada comando | G · Herramientas de desarrollador |
 | [`g3-ramas-pull-request/`](g3-ramas-pull-request/) | Ramas, merge y pull requests: prueba ideas sin romper tu proyecto | G · Herramientas de desarrollador |
@@ -78,6 +79,7 @@ Código y guías de los videos cortos del **Laboratorio Ayemi**. Cada video plan
 | [`h7-api-node-sqlite/`](h7-api-node-sqlite/) | Tu primera API: Node y SQLite con GET y POST | H · Desarrollo web |
 | [`h8-react-con-tu-api/`](h8-react-con-tu-api/) | Conecta tu React a tu propia API | H · Desarrollo web |
 | [`h9-api-node-test/`](h9-api-node-test/) | Prueba tu API de Node sin instalar nada con node:test | H · Desarrollo web |
+| [`h10-sqlite-fts5/`](h10-sqlite-fts5/) | Busca texto al instante en SQLite con FTS5 | H · Desarrollo web |
 | [`p1-pedidos-en-whatsapp/`](p1-pedidos-en-whatsapp/) | Pedidos por WhatsApp sin libreta: catálogo, tablero y resumen del día (maqueta) | P · Casos |
 | [`p2-citas-por-whatsapp/`](p2-citas-por-whatsapp/) | Citas por WhatsApp que se cruzan: agenda en línea, confirmación y recordatorio (maqueta) | P · Casos |
 | [`p3-inventario-tienda/`](p3-inventario-tienda/) | El inventario de tu tienda nunca cuadra: entradas y salidas, existencia al día y alerta de mínimo (maqueta) | P · Casos |
